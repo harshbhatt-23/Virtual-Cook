@@ -1,6 +1,7 @@
 Group 1
 
-1. Harsh Bhatt
+1. Harsh Bhatt  
+2. Harsh Darji  
 
 # Virtual-Cook
 
