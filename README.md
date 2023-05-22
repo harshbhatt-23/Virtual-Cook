@@ -17,16 +17,18 @@ Apps for the ones who are always confused about what to cook and how to cook. Th
 
 App Features:
 
-1. Multi Language Support
-2. Dark Theme, Light Theme & System Default
-3. Push Notification
-4. Search Option
-5. MultiFactor Authentication
-6. A feedback system
-7. Give user app update notification
-8. Favourite recipe
-9. Share features
-10. Text to speech voice control
-11. Voice search
-12. Filtering , sorting, organizing
-13. Pagination
+Features:
+	
+1. Search option  
+2. Push notification  
+3. Share feature  
+4. Favourite recipe  
+5. Text fo speech  
+6. Filtering & Sorting  
+7. Multi language support  
+8. Dark, light and system default  
+9. Measurement system  
+10. Dietary Restrictions  
+11. App color  
+12. Random recipe  
+
