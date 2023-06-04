@@ -3,11 +3,11 @@ import React from "react";
 import { View, Text, StyleSheet } from "react-native";
 import style from "./styles";
 
-export default function HomeScreen({ navigation }) {
+export default function FavouriteScreen({ navigation }) {
   return (
     <View style={style.container}>
-      <Text>Home Screen</Text>
-      <Button mode="contained">This is Home Page</Button>
+      <Text>Favourites Screen</Text>
+      <Button mode="contained">This is Favourites Page</Button>
     </View>
   );
 }
