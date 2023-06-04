@@ -18,7 +18,6 @@ export default function RecipesScreen({ navigation }) {
   const closeSortMenu = () => setVisibleSort(false);
 
   return (
-    <PaperProvider>
       <View>
         {/* 
       <Appbar.Header>
@@ -79,6 +78,5 @@ export default function RecipesScreen({ navigation }) {
 
 
       </View>
-    </PaperProvider>
   );
 }
