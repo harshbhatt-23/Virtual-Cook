@@ -3,11 +3,11 @@ import React from "react";
 import { View, Text, StyleSheet } from "react-native";
 import style from "./styles";
 
-export default function HomeScreen({ navigation }) {
+export default function SettingsScreen({ navigation }) {
   return (
     <View style={style.container}>
-      <Text>Home Screen</Text>
-      <Button mode="contained">This is Home Page</Button>
+      <Text>Settings Screen</Text>
+      <Button mode="contained">This is Settings Page</Button>
     </View>
   );
 }
