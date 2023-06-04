@@ -1,7 +1,6 @@
 import * as React from "react";
 import { BottomNavigation, Text } from "react-native-paper";
 import HomeScreen from "../homescreen/Home";
-import DetailsScreen from "../detailscreen/Details";
 import RecipesScreen from "../recipes/Recipes";
 import SettingsScreen from "../settings/Settings";
 import FavouriteScreen from "../favourite/Favourite";
