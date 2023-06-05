@@ -1,4 +1,5 @@
 import { StyleSheet } from "react-native";
+import { RecipeCard } from '../../AppStyles';
 
 const styles = StyleSheet.create({
   container: {
@@ -10,10 +11,7 @@ const styles = StyleSheet.create({
     // alignItems: 'center',
     // justifyContent: 'center'
   },
-  backButton: {
-
-  },
-  searchConatiner:{
+  searchConatiner: {
     marginTop: 80,
     marginLeft: 20,
     marginRight: 20
@@ -25,12 +23,28 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-around',
-    marginTop:20
+    marginTop: 20
   },
   buttoncontainer: {
-     //flex: 1, 
-     
-    }
+    //flex: 1, 
+
+  },
+  recipeContainer: RecipeCard.container,
+  photo: RecipeCard.photo,
+  title: RecipeCard.title,
+  category: RecipeCard.category,
+
+  recipeCount:{
+    flexDirection:'row',
+    justifyContent:'center',
+    alignItems:'center',
+    marginTop:15
+
+  },
+  selectedFilter:{
+    marginTop:10
+  }
+
 });
 
 export default styles;
