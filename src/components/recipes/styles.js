@@ -42,9 +42,23 @@ const styles = StyleSheet.create({
 
   },
   selectedFilter:{
-    marginTop:10
+    marginTop:10,
+    flexDirection:"row"
+  },
+  checkboxContainer: {
+    flexDirection:"row",
+    justifyContent: 'space-around',
+    alignItems: 'center',
+  },
+  menuItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 10,
+    marginVertical: 5,
+  },
+  dataBottomMargin: {
+    marginBottom: 480
   }
-
 });
 
 export default styles;
