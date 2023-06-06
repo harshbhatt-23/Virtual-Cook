@@ -169,14 +169,7 @@ export default function RecipesScreen({ navigation }) {
             <View style={style.recipeCount}>
                 <Text>{getRecipeCount} Recipe(s) Found</Text>
             </View>
-
-            {/* <View style={style.selectedFilter}>
-        <Chip style={{ margin: 5 }} onClose={() => { }} icon="information" onPress={() => console.log('Pressed')}>Breakfast</Chip>
-        <Chip style={{ margin: 5 }} onClose={() => { }} icon="information" onPress={() => console.log('Pressed')}>Lunch</Chip>
-        <Chip style={{ margin: 5 }} onClose={() => { }} icon="information" onPress={() => console.log('Pressed')}>Dinner</Chip>
-        <Chip style={{margin:5}} onClose={() => {}} icon="information" onPress={() => console.log('Pressed')}>Dessert</Chip>
-      </View> */}
-
+            
             <View style={style.dataBottomMargin}>
                 <FlatList vertical showsVerticalScrollIndicator={false} numColumns={2} data={recipeDataVal} renderItem={renderRecipes} keyExtractor={(item) => `${item.recipeId}`} />
             </View>
