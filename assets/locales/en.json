@@ -1,6 +1,14 @@
 {
     "translation": {
       "hello":"Hello",
-      "this line is translated":"This line is translated"
+      "this line is translated":"This line is translated",
+      "change language":"Change Language to French",
+      "home":"Home",
+      "recipes":"Recipes",
+      "favourites":"Favourite",
+      "settings":"Settings",
+      "search_food":"Search Food",
+      "filter":"Filter",
+      "sort":"Sort"
     }
 }
