@@ -35,10 +35,13 @@ export default function RecipesScreen({ navigation }) {
 
     const handleSortItemPress = (item) => {
         setSelectedSortItems([item]);
+
+        //sort a to z
         if (item == "AtoZ") {
             setData(recipes.sort((a, b) => a.title.localeCompare(b.title)));
         }
         
+        //sort z to a
         else if (item == "ZtoA") {
             setData(recipes.sort((a, b) => b.title.localeCompare(a.title)));
         }
