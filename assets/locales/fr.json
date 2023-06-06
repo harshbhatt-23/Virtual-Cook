@@ -1,6 +1,15 @@
 {
     "translation": {
       "hello":"Bonjour",
-      "this line is translated":"Cette ligne est traduite"
+      "this line is translated":"Cette ligne est traduite",
+      "change language":"Revenir à l'anglais",
+      "home":"Accueil",
+      "recipes":"Recettes",
+      "favourites":"Favoris",
+      "settings":"Paramètres",
+      "search_food":"Recherche de nourriture",
+      "filter":"Filtre",
+      "sort":"Trier",
+      "recipe_found":"Recette(s) trouvée(s)"
     }
   }
