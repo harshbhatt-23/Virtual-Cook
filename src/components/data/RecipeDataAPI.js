@@ -50,7 +50,6 @@ export function getRecipes(categoryId) {
     return recipesArray;
 }
 
-// modifica
 export function getRecipesByIngredient(ingredientId) {
     const recipesArray = [];
     recipes.map(data => {
@@ -91,7 +90,6 @@ export function getRecipesByIngredientName(ingredientName) {
     const recipesArray = [];
     ingredients.map(data => {
         if (data.name.toUpperCase().includes(nameUpper)) {
-            // data.name.yoUpperCase() == nameUpper
             const recipes = getRecipesByIngredient(data.ingredientId);
             const unique = [...new Set(recipes)];
             unique.map(item => {
@@ -126,4 +124,34 @@ export function getRecipesByRecipeName(recipeName) {
         }
     });
     return recipesArray;
+}
+
+export function searchRecipesByCategoryNRecipeName(categoryName, textValue) {
+    const recipesCatArray = [];
+    const recipesSelfArray = [];
+    categoryName.map((nameUpper) => {
+        categories.map(data => {
+            nameUpper = nameUpper.toUpperCase();
+            textValue = textValue.toUpperCase();
+            if (data.name.toUpperCase().includes(nameUpper)) {
+                if (data.name.toUpperCase().includes(textValue)) {
+                    const recipes = getRecipes(data.id);
+                    recipes.map(item => {
+                        recipesCatArray.push(item);
+                    });
+                }
+            }
+            else {
+                recipes.map(data => {
+                    if (data.title.toUpperCase().includes(textValue)) {
+                        recipesSelfArray.push(data);
+                    }
+                });
+            }
+        });
+    });
+
+    var aux = recipesCatArray.concat(recipesSelfArray);
+    var finalRecipeAfterSearch = [...new Set(aux)];
+    return finalRecipeAfterSearch;
 }

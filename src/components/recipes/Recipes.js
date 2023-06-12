@@ -3,17 +3,24 @@ import { View, Text, TouchableHighlight, FlatList, Image, TouchableOpacity } fro
 import style from "./styles";
 import { Searchbar, Appbar, Button, Menu, Divider, Chip, Checkbox } from 'react-native-paper';
 import { recipes } from "../../components/data/RecipeData";
-import { getCategoryName, getRecipesByRecipeName, getRecipesByCategoryName } from "../../components/data/RecipeDataAPI";
+import { getCategoryName, getRecipesByRecipeName, getRecipesByCategoryName, searchRecipesByCategoryNRecipeName } from "../../components/data/RecipeDataAPI";
 import { MaterialIcons } from '@expo/vector-icons';
 
 //The code for filtering and sorting recipe by name or cataegory
 
 export default function RecipesScreen({ navigation }) {
 
+    //Search query
     const [searchQuery, setSearchQuery] = useState('');
+
+    //Main recipe data
     const [recipeDataVal, setData] = useState(recipes)
+    
     const [getRecipeCount, setRecipeCount] = useState(recipes.length)
 
+    //Filter data
+    const [selectedItems, setSelectedItems] = useState([]);
+    const [oldArray, setOldArray] = useState([]);
 
     const MenuItem = ({ label, isSelected, onPress }) => (
         <TouchableOpacity style={style.menuItem} onPress={onPress}>
@@ -22,41 +29,133 @@ export default function RecipesScreen({ navigation }) {
         </TouchableOpacity>
     );
 
-    const [selectedItems, setSelectedItems] = useState([]);
-
     const handleItemPress = (item) => {
-        setSelectedItems([item]);
-        var recipeArray = getRecipesByCategoryName(item);
-        setData(recipeArray);
-        setRecipeCount(recipeArray.length)
+        var itemVal;
+
+        if (selectedItems.includes(item)) {
+            if (item == 'Breakfast') {
+                itemVal = 1
+            }
+            else if (item == 'Lunch') {
+                itemVal = 2
+            }
+            else if (item == 'Dinner') {
+                itemVal = 3
+            }
+            else if (item == 'Dessert') {
+                itemVal = 4
+            }
+
+            var uncheckItemCount = selectedItems.filter((selectedItem) => selectedItem !== item).length;
+            setSelectedItems(selectedItems.filter((selectedItem) => selectedItem !== item));
+
+            if (uncheckItemCount == 0) {
+                setData(recipes);
+                setRecipeCount(recipes.length)
+                setOldArray([]);
+            }
+            else {
+                const updatedArray = oldArray.filter(item => item.categoryId !== itemVal);
+                setOldArray(updatedArray);
+                setData(updatedArray);
+                setRecipeCount(updatedArray.length)
+            }
+
+        } else {
+            // Item is not selected, so add it to the selectedItems array 
+            setSelectedItems([...selectedItems, item]);
+
+            var recipeArray = getRecipesByCategoryName(item);
+            const updatedArray = [...oldArray, ...recipeArray];
+
+            if(selectedSortItems.length > 0)
+            {
+                if (selectedSortItems == "AtoZ") {
+                    setData(updatedArray.sort((a, b) => a.title.localeCompare(b.title)));
+                }
+                else if (selectedSortItems == "ZtoA") {
+                    setData(updatedArray.sort((a, b) => b.title.localeCompare(a.title)));
+                }
+            }
+            else
+            {
+                setOldArray(updatedArray)
+                setData(updatedArray);
+                setRecipeCount(updatedArray.length)
+            }
+            
+            setOldArray(updatedArray)
+            setRecipeCount(updatedArray.length)
+        }
     };
 
+    //Code for sort recipe ascending or descending..
+    //Sort data
     const [selectedSortItems, setSelectedSortItems] = useState([]);
-
     const handleSortItemPress = (item) => {
-        setSelectedSortItems([item]);
-        if (item == "AtoZ") {
-            setData(recipes.sort((a, b) => a.title.localeCompare(b.title)));
+
+        if (selectedSortItems.includes(item)) {
+            setSelectedSortItems(selectedSortItems.filter((selectedItem) => selectedItem !== item));
+            var uncheckItemCount = selectedSortItems.filter((selectedItem) => selectedItem !== item).length;
+
+            if (uncheckItemCount == 0) {
+                if (selectedItems.length > 0) {
+                    setData(oldArray.sort((a, b) => a.title.localeCompare(b.title)));
+                }
+                else {
+                    setData(recipes.sort((a, b) => a.title.localeCompare(b.title)));
+                }
+            }
         }
-        
-        else if (item == "ZtoA") {
-            setData(recipes.sort((a, b) => b.title.localeCompare(a.title)));
+        else {
+            setSelectedSortItems([item]);
+            if (selectedItems.length > 0) {
+                if (item == "AtoZ") {
+                    setData(oldArray.sort((a, b) => a.title.localeCompare(b.title)));
+                }
+                else if (item == "ZtoA") {
+                    setData(oldArray.sort((a, b) => b.title.localeCompare(a.title)));
+                }
+            }
+            else {
+                if (item == "AtoZ") {
+                    setData(recipes.sort((a, b) => a.title.localeCompare(b.title)));
+                }
+                else if (item == "ZtoA") {
+                    setData(recipes.sort((a, b) => b.title.localeCompare(a.title)));
+                }
+            }
         }
     };
 
+    //Search box value
     const onChangeSearch = (text) => {
         setSearchQuery(text);
-        var recipeArray1 = getRecipesByRecipeName(text);
-        var recipeArray2 = getRecipesByCategoryName(text);
-        var aux = recipeArray1.concat(recipeArray2);
-        var recipeArray = [...new Set(aux)];
 
-        if (text == "") {
-            setRecipeCount(recipes.length)
-            setData(recipes);
-        } else {
-            setRecipeCount(recipeArray.length)
-            setData(recipeArray);
+        if (selectedItems.length > 0) {
+            if (text == "") {
+                setRecipeCount(oldArray.length)
+                setData(oldArray);
+            }
+            else {
+                var searchResult = searchRecipesByCategoryNRecipeName(selectedItems, text)
+                setData(searchResult);
+                setRecipeCount(searchResult.length)
+            }
+        }
+        else {
+            var recipeArray1 = getRecipesByRecipeName(text);
+            var recipeArray2 = getRecipesByCategoryName(text);
+            var aux = recipeArray1.concat(recipeArray2);
+            var recipeArray = [...new Set(aux)];
+
+            if (text == "") {
+                setRecipeCount(recipes.length)
+                setData(recipes);
+            } else {
+                setRecipeCount(recipeArray.length)
+                setData(recipeArray);
+            }
         }
     };
 
@@ -88,36 +187,6 @@ export default function RecipesScreen({ navigation }) {
                 />
             </View>
 
-            {/* <View style={style.buttonMainContainer}>
-        <View style={style.buttonContainer}>
-          <Menu
-            visible={visible}
-            onDismiss={closeMenu}
-            anchor={<Button icon="filter-outline" mode="contained" onPress={openMenu}>Filter</Button>}>
-            <Menu.Item onPress={() => console.log('Item one Pressed')} title="Breakfast">
-            </Menu.Item>
-            <Divider />
-            <Menu.Item onPress={() => { }} title="Lunch" />
-            <Divider />
-            <Menu.Item onPress={() => { }} title="Dinner" />
-            <Divider />
-            <Menu.Item onPress={() => { }} title="Dessert" />
-
-          </Menu>
-        </View>
-        <View style={style.buttonContainer}>
-          <Menu
-            visible={visibleSort}
-            onDismiss={closeSortMenu}
-            anchor={<Button icon="sort-variant" mode="contained" onPress={openSortMenu}>Sort</Button>}>
-
-            <Menu.Item onPress={() => console.log('Sort one Pressed')} title="AtoZ" />
-            <Divider />
-            <Menu.Item onPress={() => { }} title="ZtoA" />
-          </Menu>
-        </View>
-      </View> */}
-
             <View style={style.buttonMainContainer}>
                 <View style={style.buttonContainer}>
                     <Menu
@@ -126,22 +195,22 @@ export default function RecipesScreen({ navigation }) {
                         anchor={<Button icon="filter-outline" mode="contained" onPress={openMenu}>Filter</Button>}>
                         <MenuItem
                             label="Breakfast"
-                            isSelected={selectedItems == 'Breakfast'}
+                            isSelected={selectedItems.includes('Breakfast')}
                             onPress={() => handleItemPress('Breakfast')}
                         />
                         <MenuItem
                             label="Lunch"
-                            isSelected={selectedItems == 'Lunch'}
+                            isSelected={selectedItems.includes('Lunch')}
                             onPress={() => handleItemPress('Lunch')}
                         />
                         <MenuItem
                             label="Dinner"
-                            isSelected={selectedItems == 'Dinner'}
+                            isSelected={selectedItems.includes('Dinner')}
                             onPress={() => handleItemPress('Dinner')}
                         />
                         <MenuItem
                             label="Dessert"
-                            isSelected={selectedItems == 'Dessert'}
+                            isSelected={selectedItems.includes('Dessert')}
                             onPress={() => handleItemPress('Dessert')}
                         />
                     </Menu>
@@ -169,7 +238,7 @@ export default function RecipesScreen({ navigation }) {
             <View style={style.recipeCount}>
                 <Text>{getRecipeCount} Recipe(s) Found</Text>
             </View>
-            
+
             <View style={style.dataBottomMargin}>
                 <FlatList vertical showsVerticalScrollIndicator={false} numColumns={2} data={recipeDataVal} renderItem={renderRecipes} keyExtractor={(item) => `${item.recipeId}`} />
             </View>
