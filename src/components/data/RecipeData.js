@@ -1,25 +1,37 @@
 export const categories = [
     {
         id: 1,
-        name: 'Breakfast',
+        name:{
+          en :"Breakfast",
+          fr : "Petit-déjeuner"
+        },
         photo_url:
             'https://namelymarly.com/wp-content/uploads/2023/05/Biscoff-Overnight-Oats-1930-web.jpg.webp'
     },
     {
         id: 2,
-        name: 'Lunch',
+        name:{
+          en :"Lunch",
+          fr : "Déjeunere"
+        },
         photo_url:
             'https://images.pexels.com/photos/48840/pexels-photo-48840.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2'
     },
     {
         id: 3,
-        name: 'Dinner',
+        name:{
+          en :"Dinner",
+          fr : "Dîner"
+        },
         photo_url:
             'https://images.pexels.com/photos/48840/pexels-photo-48840.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2'
     },
     {
         id: 4,
-        name: 'Dessert',
+        name:{
+          en :"Dessert",
+          fr : "Dessert"
+        },
         photo_url:
             'https://images.pexels.com/photos/48840/pexels-photo-48840.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2'
     }
@@ -29,7 +41,11 @@ export const recipes = [
     {
       recipeId: 1,
       categoryId: 1,
-      title: 'Biscoff Overnight Oats',
+      title:
+      {
+        en:"Biscoff Overnight Oats",
+        fr:"Gruau de nuit Biscoff"
+      },
       photo_url: 'https://namelymarly.com/wp-content/uploads/2023/05/Biscoff-Overnight-Oats-1930-web.jpg.webp',
       photosArray: [
         'https://images.pexels.com/photos/70842/hot-pepper-pepper-fire-food-70842.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2',
@@ -44,7 +60,11 @@ export const recipes = [
     {
       recipeId: 2,
       categoryId: 1,
-      title: 'Chia Flax Pudding',
+      title:
+      {
+        en:"Chia Flax Pudding",
+        fr:"Pouding Chia Lin"
+      },
       photo_url: 'https://namelymarly.com/wp-content/uploads/2023/03/Chia-Flax-Pudding-1616-web.jpg.webp',
       photosArray: [
         'https://images.pexels.com/photos/70842/hot-pepper-pepper-fire-food-70842.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2',
@@ -59,7 +79,11 @@ export const recipes = [
     {
       recipeId: 3,
       categoryId: 1,
-      title: 'Purple Smoothi Bowl',
+      title:
+      {
+        en:"Purple Smoothi Bowl",
+        fr:"Bol à Smoothi ​​Violet"
+      },
       photo_url: 'https://namelymarly.com/wp-content/uploads/2023/01/Purple-Smoothie-Bowl-1472-web.jpg.webp',
       photosArray: [
         'https://images.pexels.com/photos/70842/hot-pepper-pepper-fire-food-70842.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2',
@@ -74,7 +98,11 @@ export const recipes = [
     {
       recipeId: 4,
       categoryId: 1,
-      title: 'Egg Omelette',
+      title:
+      {
+        en:"Egg Omelette",
+        fr:"Omelette aux oeufs"
+      },
       photo_url: 'https://namelymarly.com/wp-content/uploads/2023/01/Just-Egg-Omelette-1372-web.jpg.webp',
       photosArray: [
         'https://images.pexels.com/photos/70842/hot-pepper-pepper-fire-food-70842.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2',
@@ -89,7 +117,11 @@ export const recipes = [
     {
       recipeId: 5,
       categoryId: 2,
-      title: 'Vegan Burrito',
+      title:
+      {
+        en:"Vegan Burrito",
+        fr:"Burrito végétalien"
+      },
       photo_url:
         'https://namelymarly.com/wp-content/uploads/2019/12/Breakfast_Burrito_05-web.jpg.webp',
       photosArray: [
@@ -108,7 +140,11 @@ export const recipes = [
     {
       recipeId: 6,
       categoryId: 2,
-      title: 'Vegan Tune Salad',
+      title:
+      {
+        en:"Vegan Tune Salad",
+        fr:"Salade Tune Végétalienne"
+      },
       photo_url:
         'https://namelymarly.com/wp-content/uploads/2021/01/Vegan_Tuna_Salad_03-web.jpg.webp',
       photosArray: [
@@ -127,7 +163,11 @@ export const recipes = [
     {
       recipeId: 7,
       categoryId: 2,
-      title: 'Spicy Seasame Noodles',
+      title:
+      {
+        en:"Spicy Seasame Noodles",
+        fr:"Nouilles épicées au sésame"
+      },
       photo_url:
         'https://namelymarly.com/wp-content/uploads/2017/02/Sesame_Zoodles_08-web.jpg.webp',
       photosArray: [
@@ -146,7 +186,11 @@ export const recipes = [
     {
       recipeId: 8,
       categoryId: 2,
-      title: 'Lentils Soup',
+      title:
+      {
+        en:"Lentils Soup",
+        fr:"Soupe aux lentilles"
+      },
       photo_url:
         'https://namelymarly.com/wp-content/uploads/2018/11/Lentil_Soup_05-web.jpg.webp',
       photosArray: [
@@ -165,7 +209,11 @@ export const recipes = [
     {
       recipeId: 9,
       categoryId: 3,
-      title: 'Wild Rice and Sweet Potatoes',
+      title:
+      {
+        en:"Wild Rice and Sweet Potatoes",
+        fr:"Riz sauvage et patates douces"
+      },
       photo_url: "https://namelymarly.com/wp-content/uploads/2017/01/Rice_Sweet_Potato_Skillet_04-web.jpg.webp",
       photosArray: [
         'https://images.pexels.com/photos/10518221/pexels-photo-10518221.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2',
@@ -191,7 +239,11 @@ export const recipes = [
     {
       recipeId: 10,
       categoryId: 3,
-      title: 'Taco Salad',
+      title:
+      {
+        en:"Taco Salad",
+        fr:"Salade de Taco"
+      },
       photo_url: "https://namelymarly.com/wp-content/uploads/2021/02/Vegan_Taco_Salad_05-web.jpg.webp",
       photosArray: [
         'https://images.pexels.com/photos/10518221/pexels-photo-10518221.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2',
@@ -217,7 +269,11 @@ export const recipes = [
     {
       recipeId: 11,
       categoryId: 3,
-      title: 'Pasta Bake',
+      title:
+      {
+        en:"Pasta Bake",
+        fr:"Cuire des pâtes"
+      },
       photo_url: "https://namelymarly.com/wp-content/uploads/2017/10/20171025_Vegan_Garlic_Pasta_12_edit-web.jpg.webp",
       photosArray: [
         'https://images.pexels.com/photos/10518221/pexels-photo-10518221.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2',
@@ -243,7 +299,11 @@ export const recipes = [
     {
       recipeId: 12,
       categoryId: 3,
-      title: 'Fried Rice',
+      title:
+      {
+        en:"Fried Rice",
+        fr:"Riz sauté"
+      },
       photo_url: "https://namelymarly.com/wp-content/uploads/2019/12/Vegan_Fried_Rice_10-web-1365x2048.jpg",
       photosArray: [
         'https://images.pexels.com/photos/10518221/pexels-photo-10518221.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2',
@@ -269,7 +329,11 @@ export const recipes = [
     {
       recipeId: 13,
       categoryId: 4,
-      title: 'Pineapple Tarts',
+      title:
+      {
+        en:"Pineapple Tarts",
+        fr:"Tartelettes à l'ananas"
+      },
       photo_url: "https://namelymarly.com/wp-content/uploads/2023/05/Vegan-Pineapple-Tart-2051-web.jpg.webp",
       photosArray: [
         'https://images.pexels.com/photos/10518221/pexels-photo-10518221.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2',
@@ -295,7 +359,11 @@ export const recipes = [
     {
       recipeId: 14,
       categoryId: 4,
-      title: 'Cupcakes',
+      title:
+      {
+        en:"Cupcakes",
+        fr:"Petits gâteaux"
+      },
       photo_url: "https://namelymarly.com/wp-content/uploads/2023/05/Patriotic-Cupcakes-2020-web.jpg.webp",
       photosArray: [
         'https://images.pexels.com/photos/10518221/pexels-photo-10518221.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2',
@@ -321,7 +389,11 @@ export const recipes = [
     {
       recipeId: 15,
       categoryId: 4,
-      title: 'Chocolate Orange Cake',
+      title:
+      {
+        en:"Chocolate Orange Cake",
+        fr:"Gâteau au chocolat et à l'orange"
+      },
       photo_url: "https://namelymarly.com/wp-content/uploads/2023/04/Vegan-Chocolate-Orange-Cake-1730-Edit-web.jpg.webp",
       photosArray: [
         'https://images.pexels.com/photos/10518221/pexels-photo-10518221.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2',
@@ -347,7 +419,11 @@ export const recipes = [
     {
       recipeId: 16,
       categoryId: 4,
-      title: 'Chocolate Chip Cookies',
+      title:
+      {
+        en:"Chocolate Chip Cookies",
+        fr:"Gâteaux avec des pépites de chocolat"
+      },
       photo_url: "https://namelymarly.com/wp-content/uploads/2022/12/vegan-peanut-butter-chocolate-chip-cookies-1347-web.jpg.webp",
       photosArray: [
         'https://images.pexels.com/photos/10518221/pexels-photo-10518221.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2',
@@ -373,7 +449,11 @@ export const recipes = [
     {
       recipeId: 17,
       categoryId: 4,
-      title: 'Black Forest Cake',
+      title:
+      {
+        en:"Black Forest Cake",
+        fr:"Forêt noire"
+      },
       photo_url: "https://namelymarly.com/wp-content/uploads/2022/09/Vegan-Black-Forest-Cake-05-web.jpg.webp",
       photosArray: [
         'https://images.pexels.com/photos/10518221/pexels-photo-10518221.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2',
@@ -399,7 +479,11 @@ export const recipes = [
     {
       recipeId: 18,
       categoryId: 1,
-      title: 'Chai Tea Muffins',
+      title:
+      {
+        en:"Chai Tea Muffins",
+        fr:"Muffins au thé chai"
+      },
       photo_url: "https://namelymarly.com/wp-content/uploads/2015/02/Chai-Tea-Muffins-with-Pumpkin-Seeds-13.jpg.webp",
       photosArray: [
         'https://images.pexels.com/photos/10518221/pexels-photo-10518221.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2',

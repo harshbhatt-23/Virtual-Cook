@@ -10,11 +10,11 @@ export function getCategoryById(categoryId) {
     return category;
 }
 
-export function getCategoryName(categoryId) {
+export function getCategoryName(categoryId, language) {
     let name;
     categories.map(data => {
         if (data.id == categoryId) {
-            name = data.name;
+            name = data.name[language];
         }
     });
     return name;
@@ -101,12 +101,14 @@ export function getRecipesByIngredientName(ingredientName) {
     return uniqueArray;
 }
 
-export function getRecipesByCategoryName(categoryName) {
+export function getRecipesByCategoryName(categoryName, language) {
     const nameUpper = categoryName.toUpperCase();
     const recipesArray = [];
     categories.map(data => {
-        if (data.name.toUpperCase().includes(nameUpper)) {
-            const recipes = getRecipes(data.id); // return a vector of recipes
+        const categoryDisplayName = data.name[language];
+
+        if (categoryDisplayName.toUpperCase().includes(nameUpper)) {
+            const recipes = getRecipes(data.id);
             recipes.map(item => {
                 recipesArray.push(item);
             });
@@ -115,26 +117,31 @@ export function getRecipesByCategoryName(categoryName) {
     return recipesArray;
 }
 
-export function getRecipesByRecipeName(recipeName) {
+export function getRecipesByRecipeName(recipeName, language) {
     const nameUpper = recipeName.toUpperCase();
     const recipesArray = [];
     recipes.map(data => {
-        if (data.title.toUpperCase().includes(nameUpper)) {
+        const recipeDisplayName = data.title[language];
+
+        if (recipeDisplayName.toUpperCase().includes(nameUpper)) {
             recipesArray.push(data);
         }
     });
     return recipesArray;
 }
 
-export function searchRecipesByCategoryNRecipeName(categoryName, textValue) {
+export function searchRecipesByCategoryNRecipeName(categoryName, textValue,language) {
     const recipesCatArray = [];
     const recipesSelfArray = [];
     categoryName.map((nameUpper) => {
         categories.map(data => {
             nameUpper = nameUpper.toUpperCase();
             textValue = textValue.toUpperCase();
-            if (data.name.toUpperCase().includes(nameUpper)) {
-                if (data.name.toUpperCase().includes(textValue)) {
+
+            const foodName = data.name[language];
+
+            if (foodName.toUpperCase().includes(nameUpper)) {
+                if (foodName.toUpperCase().includes(textValue)) {
                     const recipes = getRecipes(data.id);
                     recipes.map(item => {
                         recipesCatArray.push(item);
@@ -143,7 +150,7 @@ export function searchRecipesByCategoryNRecipeName(categoryName, textValue) {
             }
             else {
                 recipes.map(data => {
-                    if (data.title.toUpperCase().includes(textValue)) {
+                    if (data.title[language].toUpperCase().includes(textValue)) {
                         recipesSelfArray.push(data);
                     }
                 });
