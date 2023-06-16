@@ -6,6 +6,8 @@ import { recipes } from "../../components/data/RecipeData";
 import { getCategoryName, getRecipesByRecipeName, getRecipesByCategoryName, searchRecipesByCategoryNRecipeName } from "../../components/data/RecipeDataAPI";
 import { MaterialIcons } from '@expo/vector-icons';
 import { connect } from 'react-redux';
+import * as Speech from 'expo-speech';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 //The code for filtering and sorting recipe by name or cataegory
 
@@ -185,6 +187,12 @@ const RecipesScreen = ({language }) => {
         }
     };
 
+    const speakTitle  = (title) => {
+        say = `The title of the recipe is ${title}`;
+        options = {};
+        Speech.speak(say, options);
+    };
+
     const [visible, setVisible] = useState(false);
     const [visibleSort, setVisibleSort] = useState(false);
 
@@ -195,11 +203,16 @@ const RecipesScreen = ({language }) => {
 
     const renderRecipes = ({ item }) => (
         <TouchableHighlight underlayColor="rgba(0,0,0,0.2)" onPress={() => console.log('Onpress click for recipe')}>
+            <>
             <View style={style.recipeContainer}>
                 <Image style={style.photo} source={{ uri: item.photo_url }} />
-                <Text style={style.title}>{item.title[language]}</Text>
+                <Text style={style.title} icon="volume-high">{item.title[language]}</Text>
                 <Text style={style.category}>{getCategoryName(item.categoryId, language)}</Text>
             </View>
+            <View style={style.speakTitle}>
+                <Icon name="microphone" size={30} color="#000" onPress={() => speakTitle(item.title[language])}/>
+            </View>
+            </>
         </TouchableHighlight>
     );
 

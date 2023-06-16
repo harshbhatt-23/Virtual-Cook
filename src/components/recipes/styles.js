@@ -58,6 +58,14 @@ const styles = StyleSheet.create({
   },
   dataBottomMargin: {
     marginBottom: 480
+  },
+  speakTitle: {
+    //add style for microphone icon
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 20
   }
 });
 
