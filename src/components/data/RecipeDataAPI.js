@@ -130,7 +130,7 @@ export function getRecipesByRecipeName(recipeName, language) {
     return recipesArray;
 }
 
-export function searchRecipesByCategoryNRecipeName(categoryName, textValue,language) {
+export function searchRecipesByCategoryNRecipeName(categoryName, textValue, language) {
     const recipesCatArray = [];
     const recipesSelfArray = [];
     categoryName.map((nameUpper) => {
@@ -161,4 +161,26 @@ export function searchRecipesByCategoryNRecipeName(categoryName, textValue,langu
     var aux = recipesCatArray.concat(recipesSelfArray);
     var finalRecipeAfterSearch = [...new Set(aux)];
     return finalRecipeAfterSearch;
+}
+
+export function getIngredientById(ingredientID, language,measurement) {
+    //console.log(measurement)
+    const ingrediantArray = [];
+    ingredients.map(data => {
+        if (data.ingredientId == ingredientID) {
+            const ingredDesc = data.ingredientsDesc[language];
+            ingrediantArray.push(ingredDesc[measurement]);
+        }
+    });
+    return ingrediantArray;
+}
+
+export function getDirectionById(ingredientID, language) {
+    const ingrediantArray = [];
+    ingredients.map(data => {
+        if (data.ingredientId == ingredientID) {
+            ingrediantArray.push(data.directions[language]);
+        }
+    });
+    return ingrediantArray;
 }
