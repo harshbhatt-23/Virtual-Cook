@@ -4,11 +4,20 @@ import HomeScreen from "../homescreen/Home";
 import RecipesScreen from "../recipes/Recipes";
 import SettingsScreen from "../settings/Settings";
 import FavouriteScreen from "../favourite/Favourite";
+import RecipeDetails from '../recipedetails/RecipeDetails'
 import { Provider, connect } from 'react-redux';
 import store from '../redux/store';
 import { setLanguage } from '../redux/actions';
+import { createStackNavigator } from '@react-navigation/stack';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { NavigationContainer } from '@react-navigation/native';
+import Icon from 'react-native-vector-icons/FontAwesome';
+
+const Stack = createStackNavigator();
+const Tab = createBottomTabNavigator();
 
 const MainComponent = ({ language, setLanguage }) => {
+
   const [index, setIndex] = React.useState(0);
   const [routes, setRoutes] = React.useState([
     {
@@ -20,8 +29,8 @@ const MainComponent = ({ language, setLanguage }) => {
     {
       key: "recipes",
       title: language === 'en' ? "Recipes" : "Recettes",
-      focusedIcon: "cookie",
-      unfocusedIcon: "cookie-outline",
+      focusedIcon: "cutlery",
+      unfocusedIcon: "cutlery-outline",
     },
     {
       key: "favourite",
@@ -70,13 +79,84 @@ const MainComponent = ({ language, setLanguage }) => {
     settings: SettingsScreen,
   });
 
+  const RecipesStack = () => {
+    return (
+      <Stack.Navigator>
+        <Stack.Screen
+          name="Recipes"
+          component={RecipesScreen}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="RecipeDetails"
+          component={RecipeDetails}
+          options={{ headerShown: false,tabBarButton: () => null, tabBarLabel: () => null }}
+          // options={{ headerShown: false }}
+        />
+      </Stack.Navigator>
+    );
+  };
+
+  // return (
+  //   <Provider store={store}>
+  //     <BottomNavigation
+  //       navigationState={{ index, routes }}
+  //       onIndexChange={setIndex}
+  //       renderScene={renderScene}
+  //     />
+  //   </Provider>
+  // );
   return (
     <Provider store={store}>
-      <BottomNavigation
-        navigationState={{ index, routes }}
-        onIndexChange={setIndex}
-        renderScene={renderScene}
-      />
+      <NavigationContainer>
+        <Tab.Navigator
+          screenOptions={({ route }) => ({
+            tabBarIcon: ({ focused, color, size }) => {
+              let iconName;
+              switch (route.name) {
+                case "home":
+                  iconName = "home";
+                  break;
+                case "recipes":
+                  iconName = "cutlery";
+                  break;
+                case "favourite":
+                  iconName = "heart";
+                  break;
+                case "settings":
+                  iconName = "cog";
+                  break;
+                default:
+                  iconName = "";
+              }
+              return (
+                <Icon name={iconName} size={size} color={color} />
+              );
+            },
+          })}
+        >
+          <Tab.Screen
+            name="home"
+            component={HomeScreen}
+            options={{ title: routes[0].title }}
+          />
+          <Tab.Screen
+            name="recipes"
+            component={RecipesStack}
+            options={{ title: routes[1].title }}
+          />
+          <Tab.Screen
+            name="favourite"
+            component={FavouriteScreen}
+            options={{ title: routes[2].title }}
+          />
+          <Tab.Screen
+            name="settings"
+            component={SettingsScreen}
+            options={{ title: routes[3].title }}
+          />
+        </Tab.Navigator>
+      </NavigationContainer>
     </Provider>
   );
 };

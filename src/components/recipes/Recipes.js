@@ -10,8 +10,13 @@ import * as Speech from 'expo-speech';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
 //The code for filtering and sorting recipe by name or cataegory
+const RecipesScreen = ({ language, navigation }) => {
 
-const RecipesScreen = ({language }) => {
+    const handleRecipePress = (item) => {
+        // Navigate to RecipeDetails screen
+        //console.log(item);
+        navigation.navigate("RecipeDetails", { item: item })
+    };
 
     const menuLabels = {
         en: {
@@ -166,13 +171,13 @@ const RecipesScreen = ({language }) => {
                 setData(oldArray);
             }
             else {
-                var searchResult = searchRecipesByCategoryNRecipeName(selectedItems, text,language)
+                var searchResult = searchRecipesByCategoryNRecipeName(selectedItems, text, language)
                 setData(searchResult);
                 setRecipeCount(searchResult.length)
             }
         }
         else {
-            var recipeArray1 = getRecipesByRecipeName(text,language);
+            var recipeArray1 = getRecipesByRecipeName(text, language);
             var recipeArray2 = getRecipesByCategoryName(text, language);
             var aux = recipeArray1.concat(recipeArray2);
             var recipeArray = [...new Set(aux)];
@@ -187,7 +192,7 @@ const RecipesScreen = ({language }) => {
         }
     };
 
-    const speakTitle  = (title) => {
+    const speakTitle = (title) => {
         say = `The title of the recipe is ${title}`;
         options = {};
         Speech.speak(say, options);
@@ -202,16 +207,17 @@ const RecipesScreen = ({language }) => {
     const closeSortMenu = () => setVisibleSort(false);
 
     const renderRecipes = ({ item }) => (
-        <TouchableHighlight underlayColor="rgba(0,0,0,0.2)" onPress={() => console.log('Onpress click for recipe')}>
+        <TouchableHighlight underlayColor="rgba(0,0,0,0.2)"
+            onPress={() => handleRecipePress(item)}>
             <>
-            <View style={style.recipeContainer}>
-                <Image style={style.photo} source={{ uri: item.photo_url }} />
-                <Text style={style.title} icon="volume-high">{item.title[language]}</Text>
-                <Text style={style.category}>{getCategoryName(item.categoryId, language)}</Text>
-            </View>
-            <View style={style.speakTitle}>
-                <Icon name="microphone" size={30} color="#000" onPress={() => speakTitle(item.title[language])}/>
-            </View>
+                <View style={style.recipeContainer}>
+                    <Image style={style.photo} source={{ uri: item.photo_url }} />
+                    <Text style={style.title} icon="volume-high">{item.title[language]}</Text>
+                    <Text style={style.category}>{getCategoryName(item.categoryId, language)}</Text>
+                </View>
+                <View style={style.speakTitle}>
+                    <Icon name="microphone" size={30} color="#000" onPress={() => speakTitle(item.title[language])} />
+                </View>
             </>
         </TouchableHighlight>
     );
