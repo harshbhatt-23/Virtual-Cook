@@ -167,7 +167,6 @@ export const recipes = [
       fr: "Dans ce plat de nouilles rapide et épicé en semaine, de l'huile chaude grésillante est versée sur des flocons de piment rouge, des zestes d'orange, des cacahuètes croquantes, de la sauce soja et de l'huile de sésame. Pendant que vous faites dorer le poulet haché, le mélange repose et les saveurs deviennent plus prononcées et ardentes. Mélangé avec des nouilles molles et du poulet doré, l'huile d'arachide pimentée brille. Si vous avez envie de quelque chose de vert, ajoutez un légume vert à cuisson rapide lorsque vous décomposez le poulet à l'étape 3. Vous pouvez également échanger le poulet avec du porc ou du bœuf haché, ou du tofu émietté."
     }
   },
-  //     [59, '1'],
   {
     recipeId: 8,
     categoryId: 2,
