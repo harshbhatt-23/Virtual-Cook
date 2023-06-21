@@ -6,9 +6,10 @@ import {
   Image,
   SafeAreaView,
   ScrollView,
+  BackHandler
 } from "react-native";
 import { connect } from "react-redux";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useIsFocused } from "@react-navigation/native";
 import {
   getCategoryName,
   getDirectionById,
@@ -18,12 +19,15 @@ import { FAB, Appbar } from "react-native-paper";
 import styles from "./styles";
 import HorizontalLine from "../HorizontalLine/HorizontalLine";
 import { HeaderBackButton } from "@react-navigation/stack";
+import * as Speech from 'expo-speech';
 
 const RecipeDetails = ({ route, language, measurement }) => {
   const { item } = route.params;
   const navigation = useNavigation();
+  const isFocused = useIsFocused();
 
   const handleBackPress = () => {
+    Speech.stop();
     // Navigate back to RecipesScreen
     navigation.goBack();
   };
@@ -52,6 +56,34 @@ const RecipeDetails = ({ route, language, measurement }) => {
 
   const directionData = getDirectionById(item.ingredientId, language);
   const directions = directionData && directionData[0];
+
+  const speakRecipe = () => {
+    if(language == 'fr'){
+      Speech.speak('Le titre de la recette est ' + item.title[language] + '. La catégorie est ' + getCategoryName(item.categoryId, language) + '. Le temps de préparation est ' + item.preptime + '. Le temps de cuisson est ' + item.cooktime + '. La description est ' + item.description[language] + '. Les ingrédients sont ' + getIngredientById(item.ingredientId, language, measurement) + '. Les directions sont ' + getDirectionById(item.ingredientId, language) + '.');
+    } else {
+      Speech.speak('The title of the recipe is ' + item.title[language] + '. The category is ' + getCategoryName(item.categoryId, language) + '. The prep time is ' + item.preptime + '. The cook time is ' + item.cooktime + '. The description is ' + item.description[language] + '. The ingredients are ' + getIngredientById(item.ingredientId, language, measurement) + '. The directions are ' + getDirectionById(item.ingredientId, language) + '.');
+    }
+  };
+
+  React.useEffect(() => {
+    const handleBackPress = () => {
+      stopTextToSpeech();
+      return false;
+    };
+    BackHandler.addEventListener('hardwareBackPress', handleBackPress);
+    navigation.addListener('blur', () => {
+      if (isFocused) {
+        stopTextToSpeech();
+      }
+    });
+    return () => {
+      BackHandler.removeEventListener('hardwareBackPress', handleBackPress);
+    };
+  }, []);
+
+  const stopTextToSpeech = async () => {
+    Speech.stop();
+  };
 
   return (
     // <SafeAreaView style={styles.container}>
@@ -119,7 +151,7 @@ const RecipeDetails = ({ route, language, measurement }) => {
         <FAB
           icon="text-to-speech"
           style={styles.fab}
-          onPress={() => console.log("Pressed")}
+          onPress={() => speakRecipe()}
         />
       </View>
     </ScrollView>
