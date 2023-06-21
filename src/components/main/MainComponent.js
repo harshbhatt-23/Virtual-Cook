@@ -4,43 +4,46 @@ import HomeScreen from "../homescreen/Home";
 import RecipesScreen from "../recipes/Recipes";
 import SettingsScreen from "../settings/Settings";
 import FavouriteScreen from "../favourite/Favourite";
-import RecipeDetails from '../recipedetails/RecipeDetails'
-import { Provider, connect } from 'react-redux';
-import store from '../redux/store';
-import { setLanguage } from '../redux/actions';
-import { createStackNavigator } from '@react-navigation/stack';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { NavigationContainer } from '@react-navigation/native';
-import Icon from 'react-native-vector-icons/FontAwesome';
+import RecipeDetails from "../recipedetails/RecipeDetails";
+import { Provider, connect } from "react-redux";
+import store from "../redux/store";
+import { setLanguage } from "../redux/actions";
+import { createStackNavigator } from "@react-navigation/stack";
+// import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { NavigationContainer } from "@react-navigation/native";
+//import Icon from "react-native-vector-icons/FontAwesome";
+
+import { createMaterialBottomTabNavigator } from "react-native-paper/react-navigation";
+import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 
 const Stack = createStackNavigator();
-const Tab = createBottomTabNavigator();
+//const Tab = createBottomTabNavigator();
+const Tab = createMaterialBottomTabNavigator();
 
 const MainComponent = ({ language, setLanguage }) => {
-
   const [index, setIndex] = React.useState(0);
   const [routes, setRoutes] = React.useState([
     {
       key: "home",
-      title: language === 'en' ? "Home" : "Accueil",
+      title: language === "en" ? "Home" : "Accueil",
       focusedIcon: "home",
       unfocusedIcon: "home-outline",
     },
     {
       key: "recipes",
-      title: language === 'en' ? "Recipes" : "Recettes",
-      focusedIcon: "cutlery",
-      unfocusedIcon: "cutlery-outline",
+      title: language === "en" ? "Recipes" : "Recettes",
+      focusedIcon: "cookie",
+      unfocusedIcon: "cookie-outline",
     },
     {
       key: "favourite",
-      title: language === 'en' ? "Favourite" : "Préférée",
+      title: language === "en" ? "Favourite" : "Préférée",
       focusedIcon: "heart-multiple",
       unfocusedIcon: "heart-multiple-outline",
     },
     {
       key: "settings",
-      title: language === 'en' ? "Settings" : "Paramètres",
+      title: language === "en" ? "Settings" : "Paramètres",
       focusedIcon: "cog",
       unfocusedIcon: "cog-outline",
     },
@@ -60,13 +63,13 @@ const MainComponent = ({ language, setLanguage }) => {
     // Return the corresponding title based on the route key and language
     switch (key) {
       case "home":
-        return language === 'en' ? "Home" : "Accueil";
+        return language === "en" ? "Home" : "Accueil";
       case "recipes":
-        return language === 'en' ? "Recipes" : "Recettes";
+        return language === "en" ? "Recipes" : "Recettes";
       case "favourite":
-        return language === 'en' ? "Favourite" : "Favoris";
+        return language === "en" ? "Favourite" : "Favoris";
       case "settings":
-        return language === 'en' ? "Settings" : "Paramètres";
+        return language === "en" ? "Settings" : "Paramètres";
       default:
         return "";
     }
@@ -90,7 +93,11 @@ const MainComponent = ({ language, setLanguage }) => {
         <Stack.Screen
           name="RecipeDetails"
           component={RecipeDetails}
-          options={{ headerShown: false,tabBarButton: () => null, tabBarLabel: () => null }}
+          options={{
+            headerShown: false,
+            tabBarButton: () => null,
+            tabBarLabel: () => null,
+          }}
           // options={{ headerShown: false }}
         />
       </Stack.Navigator>
@@ -112,26 +119,26 @@ const MainComponent = ({ language, setLanguage }) => {
         <Tab.Navigator
           screenOptions={({ route }) => ({
             tabBarIcon: ({ focused, color, size }) => {
-              let iconName;
+              let focusedIcon = routes.focusedIcon;
+              let unfocusedIcon = routes.unfocusedIcon;
               switch (route.name) {
                 case "home":
-                  iconName = "home";
+                  iconName = focused ? "home" : "home-outline";
                   break;
                 case "recipes":
-                  iconName = "cutlery";
+                  iconName = focused ? "cookie" : "cookie-outline";
                   break;
                 case "favourite":
-                  iconName = "heart";
+                  iconName = focused
+                    ? "heart-multiple"
+                    : "heart-multiple-outline";
                   break;
                 case "settings":
-                  iconName = "cog";
+                  iconName = focused ? "cog" : "cog-outline";
                   break;
                 default:
-                  iconName = "";
               }
-              return (
-                <Icon name={iconName} size={size} color={color} />
-              );
+              return <Icon name={iconName} size={24} color={color} />;
             },
           })}
         >
@@ -169,7 +176,10 @@ const mapDispatchToProps = {
   setLanguage,
 };
 
-const ConnectedMainComponent = connect(mapStateToProps, mapDispatchToProps)(MainComponent);
+const ConnectedMainComponent = connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(MainComponent);
 
 const App = () => {
   return (
