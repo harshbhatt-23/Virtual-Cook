@@ -10,11 +10,11 @@ export function getCategoryById(categoryId) {
     return category;
 }
 
-export function getCategoryName(categoryId) {
+export function getCategoryName(categoryId, language) {
     let name;
     categories.map(data => {
         if (data.id == categoryId) {
-            name = data.name;
+            name = data.name[language];
         }
     });
     return name;
@@ -50,7 +50,6 @@ export function getRecipes(categoryId) {
     return recipesArray;
 }
 
-// modifica
 export function getRecipesByIngredient(ingredientId) {
     const recipesArray = [];
     recipes.map(data => {
@@ -91,7 +90,6 @@ export function getRecipesByIngredientName(ingredientName) {
     const recipesArray = [];
     ingredients.map(data => {
         if (data.name.toUpperCase().includes(nameUpper)) {
-            // data.name.yoUpperCase() == nameUpper
             const recipes = getRecipesByIngredient(data.ingredientId);
             const unique = [...new Set(recipes)];
             unique.map(item => {
@@ -103,12 +101,14 @@ export function getRecipesByIngredientName(ingredientName) {
     return uniqueArray;
 }
 
-export function getRecipesByCategoryName(categoryName) {
+export function getRecipesByCategoryName(categoryName, language) {
     const nameUpper = categoryName.toUpperCase();
     const recipesArray = [];
     categories.map(data => {
-        if (data.name.toUpperCase().includes(nameUpper)) {
-            const recipes = getRecipes(data.id); // return a vector of recipes
+        const categoryDisplayName = data.name[language];
+
+        if (categoryDisplayName.toUpperCase().includes(nameUpper)) {
+            const recipes = getRecipes(data.id);
             recipes.map(item => {
                 recipesArray.push(item);
             });
@@ -117,13 +117,70 @@ export function getRecipesByCategoryName(categoryName) {
     return recipesArray;
 }
 
-export function getRecipesByRecipeName(recipeName) {
+export function getRecipesByRecipeName(recipeName, language) {
     const nameUpper = recipeName.toUpperCase();
     const recipesArray = [];
     recipes.map(data => {
-        if (data.title.toUpperCase().includes(nameUpper)) {
+        const recipeDisplayName = data.title[language];
+
+        if (recipeDisplayName.toUpperCase().includes(nameUpper)) {
             recipesArray.push(data);
         }
     });
     return recipesArray;
+}
+
+export function searchRecipesByCategoryNRecipeName(categoryName, textValue, language) {
+    const recipesCatArray = [];
+    const recipesSelfArray = [];
+    categoryName.map((nameUpper) => {
+        categories.map(data => {
+            nameUpper = nameUpper.toUpperCase();
+            textValue = textValue.toUpperCase();
+
+            const foodName = data.name[language];
+
+            if (foodName.toUpperCase().includes(nameUpper)) {
+                if (foodName.toUpperCase().includes(textValue)) {
+                    const recipes = getRecipes(data.id);
+                    recipes.map(item => {
+                        recipesCatArray.push(item);
+                    });
+                }
+            }
+            else {
+                recipes.map(data => {
+                    if (data.title[language].toUpperCase().includes(textValue)) {
+                        recipesSelfArray.push(data);
+                    }
+                });
+            }
+        });
+    });
+
+    var aux = recipesCatArray.concat(recipesSelfArray);
+    var finalRecipeAfterSearch = [...new Set(aux)];
+    return finalRecipeAfterSearch;
+}
+
+export function getIngredientById(ingredientID, language,measurement) {
+    //console.log(measurement)
+    const ingrediantArray = [];
+    ingredients.map(data => {
+        if (data.ingredientId == ingredientID) {
+            const ingredDesc = data.ingredientsDesc[language];
+            ingrediantArray.push(ingredDesc[measurement]);
+        }
+    });
+    return ingrediantArray;
+}
+
+export function getDirectionById(ingredientID, language) {
+    const ingrediantArray = [];
+    ingredients.map(data => {
+        if (data.ingredientId == ingredientID) {
+            ingrediantArray.push(data.directions[language]);
+        }
+    });
+    return ingrediantArray;
 }

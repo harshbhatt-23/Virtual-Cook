@@ -1,57 +1,82 @@
-import { Button, Switch } from "react-native-paper";
 import React, { useState } from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { connect } from "react-redux";
+import { setLanguage, setMeasurement } from "../redux/actions";
+import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import { Button, Switch } from "react-native-paper";
 import style from "./styles";
-import "../../i18n";
-import { useTranslation } from "react-i18next";
+import LocalNotification from "../LocalNotification/LocalNotification";
 
-export default function SettingsScreen({ navigation }) {
-  const { t, i18n } = useTranslation();
-
-  const [currentLanguage, setLanguage] = useState("en");
-
-  const changeLanguage = (value) => {
-    i18n
-      .changeLanguage(value)
-      .then(() => setLanguage(value))
-      .catch((err) => console.log(err));
+const SettingsScreen = ({ language, setLanguage, measurement, setMeasurement }) => {
+  const settingsLabel = {
+    en: {
+      changeLanguage: "Change Language:",
+      selectTheme: "Dark Mode",
+      enableDarkMode: "Enable Dark Mode",
+      changeToMetric: "Change to Metric",
+      changeToUsImperial: "Change to US/Imperial",
+      measurements: "Measurements:",
+    },
+    fr: {
+      changeLanguage: "Changer de langue:",
+      selectTheme: "Mode sombre",
+      enableDarkMode: "Activer le mode sombre",
+      changeToMetric: "Changer en métrique",
+      changeToUsImperial: "Changer pour US/Impérial",
+      measurements: "Des mesures:"
+    },
   };
 
-  const [isSwitchOn, setIsSwitchOn] = React.useState(false);
+  const [isSwitchOn, setIsSwitchOn] = useState(language === "fr");
+  const [isSwitchOnMeasurement, setIsSwitchOnMeasurement] = useState(measurement === "metric");
+
   const onToggleSwitch = () => {
+    const newLanguage = isSwitchOn ? "en" : "fr";
     setIsSwitchOn(!isSwitchOn);
-    if (currentLanguage === "en") {
-      changeLanguage("fr");
-      //saveLanguage("fr");
-    } else {
-      changeLanguage("en");
-      //saveLanguage("en");
-    }
+    setLanguage(newLanguage);
   };
 
-  // const saveLanguage = async (selectedLanguage) => {
-  //   try {
-  //     await AsyncStorage.setItem("appLanguage", selectedLanguage);
-  //     console.log("Language saved successfully");
-  //     Updates.reloadAsync();
-  //   } catch (error) {
-  //     console.log("Error saving language:", error);
-  //   }
-  // };
+  const onToggleSwitchMeasurement = () => {
+    const newMeasurement = isSwitchOnMeasurement ? "us_imperial" : "metric";
+    setIsSwitchOnMeasurement(!isSwitchOnMeasurement);
+    setMeasurement(newMeasurement);
+  };
 
   return (
     <View style={style.container}>
-      <Button mode="contained">{t("this line is translated")}</Button>
-
+      <Text style={style.title}>{settingsLabel[language].changeLanguage}</Text>
       <View style={style.switch}>
-        <Text>
-          {currentLanguage === "en"
-            ? t("change language")
-            : t("change language")}
+        <Text style={style.options.label}>
+          {isSwitchOn ? "Passer à l'anglais" : "Change to French"}
         </Text>
-
         <Switch value={isSwitchOn} onValueChange={onToggleSwitch} />
       </View>
+
+      <View style={style.lineStyle} />
+
+      <LocalNotification />
+
+      <View style={style.lineStyle} />
+
+      <Text style={style.title}>{settingsLabel[language].measurements}</Text>
+      <View style={style.switch}>
+        <Text style={style.options.label}>
+          {isSwitchOnMeasurement ? settingsLabel[language].changeToUsImperial : settingsLabel[language].changeToMetric}
+        </Text>
+        <Switch value={isSwitchOnMeasurement} onValueChange={onToggleSwitchMeasurement} />
+      </View>
+
     </View>
   );
-}
+};
+
+const mapStateToProps = (state) => ({
+  language: state.language,
+  measurement: state.measurement
+});
+
+const mapDispatchToProps = {
+  setLanguage,
+  setMeasurement
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(SettingsScreen);
