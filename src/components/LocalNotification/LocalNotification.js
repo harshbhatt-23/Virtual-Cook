@@ -108,8 +108,8 @@ async function scheduleReminder() {
         },
       },
       trigger: {
-        hour: 0, // 9 am
-        minute: 40,
+        hour: 22, // 9 am
+        minute: 4,
         repeats: true, // repeat every day
       },
     });

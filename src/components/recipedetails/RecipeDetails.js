@@ -149,7 +149,7 @@ const RecipeDetails = ({ route, language, measurement }) => {
   };
 
   return (
-    <ScrollView>
+    <ScrollView stickyHeaderIndices={[0]}>
       <Appbar.Header mode="center-aligned">
         <Appbar.BackAction
           onPress={() => {
