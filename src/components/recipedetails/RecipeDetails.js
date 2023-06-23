@@ -88,12 +88,12 @@ const RecipeDetails = ({ route, language, measurement }) => {
           item.preptime +
           ". Le temps de cuisson est " +
           item.cooktime +
-          ". La description est " +
-          item.description[language] +
           ". Les ingrédients sont " +
           getIngredientById(item.ingredientId, language, measurement) +
           ". Les directions sont " +
           getDirectionById(item.ingredientId, language) +
+          ". La description est " +
+          item.description[language] +
           "."
       );
     } else {
@@ -106,12 +106,12 @@ const RecipeDetails = ({ route, language, measurement }) => {
           item.preptime +
           ". The cook time is " +
           item.cooktime +
-          ". The description is " +
-          item.description[language] +
           ". The ingredients are " +
           getIngredientById(item.ingredientId, language, measurement) +
           ". The directions are " +
           getDirectionById(item.ingredientId, language) +
+          ". The description is " +
+          item.description[language] +
           "."
       );
     }
