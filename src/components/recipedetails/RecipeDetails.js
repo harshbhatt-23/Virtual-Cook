@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -6,7 +6,7 @@ import {
   Image,
   SafeAreaView,
   ScrollView,
-  BackHandler
+  BackHandler,
 } from "react-native";
 import { connect } from "react-redux";
 import { useNavigation, useIsFocused } from "@react-navigation/native";
@@ -15,13 +15,25 @@ import {
   getDirectionById,
   getIngredientById,
 } from "../../components/data/RecipeDataAPI";
-import { FAB, Appbar } from "react-native-paper";
+import {
+  FAB,
+  Appbar,
+  IconButton,
+  MD3Colors,
+  Snackbar,
+  Divider,
+} from "react-native-paper";
 import styles from "./styles";
 import HorizontalLine from "../HorizontalLine/HorizontalLine";
 import { HeaderBackButton } from "@react-navigation/stack";
-import * as Speech from 'expo-speech';
+import * as Speech from "expo-speech";
+import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 
 const RecipeDetails = ({ route, language, measurement }) => {
+  const [showSnackbar, setShowSnackbar] = React.useState(false);
+  const [isClicked, setIsClicked] = useState(false);
+  const [isFirstIcon, setIsFirstIcon] = useState(false);
+
   const { item } = route.params;
   const navigation = useNavigation();
   const isFocused = useIsFocused();
@@ -38,12 +50,14 @@ const RecipeDetails = ({ route, language, measurement }) => {
       CookTime: "Cook Time",
       Ingredients: "Ingredients",
       Directions: "Directions",
+      Description: "Description",
     },
     fr: {
       PrepTime: "Temps de préparation",
       CookTime: "Temps de cuisson",
       Ingredients: "Ingrédients",
       Directions: "Directions",
+      Description: "Description",
     },
   };
 
@@ -58,10 +72,48 @@ const RecipeDetails = ({ route, language, measurement }) => {
   const directions = directionData && directionData[0];
 
   const speakRecipe = () => {
-    if(language == 'fr'){
-      Speech.speak('Le titre de la recette est ' + item.title[language] + '. La catégorie est ' + getCategoryName(item.categoryId, language) + '. Le temps de préparation est ' + item.preptime + '. Le temps de cuisson est ' + item.cooktime + '. La description est ' + item.description[language] + '. Les ingrédients sont ' + getIngredientById(item.ingredientId, language, measurement) + '. Les directions sont ' + getDirectionById(item.ingredientId, language) + '.');
+    if (isClicked) {
+      setIsClicked(!isClicked);
+      stopTextToSpeech();
+      return;
+    }
+    setIsClicked(!isClicked);
+    if (language == "fr") {
+      Speech.speak(
+        "Le titre de la recette est " +
+          item.title[language] +
+          ". La catégorie est " +
+          getCategoryName(item.categoryId, language) +
+          ". Le temps de préparation est " +
+          item.preptime +
+          ". Le temps de cuisson est " +
+          item.cooktime +
+          ". Les ingrédients sont " +
+          getIngredientById(item.ingredientId, language, measurement) +
+          ". Les directions sont " +
+          getDirectionById(item.ingredientId, language) +
+          ". La description est " +
+          item.description[language] +
+          "."
+      );
     } else {
-      Speech.speak('The title of the recipe is ' + item.title[language] + '. The category is ' + getCategoryName(item.categoryId, language) + '. The prep time is ' + item.preptime + '. The cook time is ' + item.cooktime + '. The description is ' + item.description[language] + '. The ingredients are ' + getIngredientById(item.ingredientId, language, measurement) + '. The directions are ' + getDirectionById(item.ingredientId, language) + '.');
+      Speech.speak(
+        "The title of the recipe is " +
+          item.title[language] +
+          ". The category is " +
+          getCategoryName(item.categoryId, language) +
+          ". The prep time is " +
+          item.preptime +
+          ". The cook time is " +
+          item.cooktime +
+          ". The ingredients are " +
+          getIngredientById(item.ingredientId, language, measurement) +
+          ". The directions are " +
+          getDirectionById(item.ingredientId, language) +
+          ". The description is " +
+          item.description[language] +
+          "."
+      );
     }
   };
 
@@ -70,14 +122,14 @@ const RecipeDetails = ({ route, language, measurement }) => {
       stopTextToSpeech();
       return false;
     };
-    BackHandler.addEventListener('hardwareBackPress', handleBackPress);
-    navigation.addListener('blur', () => {
+    BackHandler.addEventListener("hardwareBackPress", handleBackPress);
+    navigation.addListener("blur", () => {
       if (isFocused) {
         stopTextToSpeech();
       }
     });
     return () => {
-      BackHandler.removeEventListener('hardwareBackPress', handleBackPress);
+      BackHandler.removeEventListener("hardwareBackPress", handleBackPress);
     };
   }, []);
 
@@ -85,12 +137,19 @@ const RecipeDetails = ({ route, language, measurement }) => {
     Speech.stop();
   };
 
+  const [showInfo, setShowInfo] = useState(false);
+
+  const handleIconLongPress = (isTrue) => {
+    setShowSnackbar(true);
+    isTrue ? setIsFirstIcon(true) : setIsFirstIcon(false);
+  };
+
+  const hideSnackbar = () => {
+    setShowSnackbar(false);
+  };
+
   return (
-    // <SafeAreaView style={styles.container}>
     <ScrollView>
-      {/* <TouchableOpacity style={styles.backButton} onPress={handleBackPress}>
-          <Text style={styles.buttonText}>Go Back</Text>
-        </TouchableOpacity> */}
       <Appbar.Header mode="center-aligned">
         <Appbar.BackAction
           onPress={() => {
@@ -100,64 +159,161 @@ const RecipeDetails = ({ route, language, measurement }) => {
         <Appbar.Content title={item.title[language]} />
       </Appbar.Header>
       <Image style={styles.image} source={{ uri: item.photo_url }} />
-      <View style={styles.content}>
-        {/* <Text style={styles.recipeName}>{item.title[language]}</Text> */}
 
+      {/* Breakfast */}
+      <View style={styles.content}>
         <Text style={styles.categoryName}>
           {getCategoryName(item.categoryId, language)}
         </Text>
 
-        <Text style={styles.prepTime}>
-          {displayWords[language].PrepTime} {item.preptime}
-        </Text>
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
+        >
+          <View style={{ flexDirection: "row", alignItems: "center" }}>
+            <TouchableOpacity
+              onLongPress={() => handleIconLongPress(true)}
+              onPressOut={() => setShowInfo(false)}
+            >
+              <IconButton
+                icon="clipboard-clock"
+                size={24}
+                iconColor={MD3Colors.primary50}
+              />
+            </TouchableOpacity>
+            <Text style={styles.prepTime}>{item.preptime}</Text>
 
-        <Text style={styles.prepTime}>
-          {displayWords[language].CookTime} {item.cooktime}
-        </Text>
+            <TouchableOpacity
+              onLongPress={() => handleIconLongPress(false)}
+              onPressOut={() => setShowInfo(false)}
+            >
+              <IconButton
+                icon="cookie-clock"
+                size={24}
+                iconColor={MD3Colors.primary50}
+              />
+            </TouchableOpacity>
+            <Text style={styles.prepTime}>{item.cooktime}</Text>
+          </View>
 
-        <Text>{item.description[language]}</Text>
+          <FAB
+            icon={isClicked ? "text-to-speech-off" : "text-to-speech"}
+            style={styles.fab}
+            onPress={() => speakRecipe()}
+          />
 
-        <HorizontalLine />
+          <Snackbar
+            visible={showSnackbar}
+            onDismiss={hideSnackbar}
+            duration={3000}
+            action={{
+              label: "Dismiss",
+              onPress: hideSnackbar,
+            }}
+          >
+            {isFirstIcon
+              ? "Preperation Time: " + item.preptime
+              : "Cooking Time: " + item.cooktime}
+          </Snackbar>
+        </View>
 
-        <Text style={styles.recipeName}>
-          {displayWords[language].Ingredients}
-        </Text>
+        <Divider />
+
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            marginRight: 10,
+          }}
+        >
+          <IconButton icon="file-document" iconColor={MD3Colors.primary50} />
+          <Text style={styles.recipeName}>
+            {displayWords[language].Ingredients}
+          </Text>
+        </View>
         {ingredients && (
-          <ScrollView>
+          <View>
             {ingredients.map((ingredient, index) => (
-              <View key={index} style={styles.bulletPoint}>
-                <Text style={styles.bulletPointText}>• {ingredient}</Text>
+              <View
+                key={index}
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  marginRight: 10,
+                }}
+              >
+                <IconButton
+                  icon="circle-medium"
+                  iconColor={MD3Colors.neutral10}
+                />
+                <Text style={{ fontSize: 16, marginRight: 30 }}>
+                  {ingredient}
+                </Text>
               </View>
             ))}
-          </ScrollView>
+          </View>
         )}
 
-        <HorizontalLine />
+        <Divider />
 
-        <Text style={styles.recipeName}>
-          {displayWords[language].Directions}
-        </Text>
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            marginRight: 10,
+          }}
+        >
+          <IconButton icon="bowl-mix" iconColor={MD3Colors.primary50} />
+          <Text style={styles.recipeName}>
+            {displayWords[language].Directions}
+          </Text>
+        </View>
         {directions && (
-          <ScrollView>
+          <View style={{ marginBottom: 16 }}>
             {directions.map((direc, index) => (
-              <View key={index} style={styles.bulletPoint}>
-                <Text style={styles.bulletPointText}>• {direc}</Text>
+              <View key={index}>
+                <Text style={styles.recipeDescription}>
+                  {index + 1}. {"\u00A0"}
+                  {direc}
+                </Text>
               </View>
             ))}
-          </ScrollView>
+          </View>
         )}
 
-        {/* text-to-speech-off */}
-        <FAB
-          icon="text-to-speech"
-          style={styles.fab}
-          onPress={() => speakRecipe()}
-        />
+        <Divider />
+
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            marginRight: 10,
+          }}
+        >
+          <IconButton
+            icon="book-open-variant"
+            iconColor={MD3Colors.primary50}
+          />
+          <Text style={styles.recipeName}>
+            {displayWords[language].Description}
+          </Text>
+        </View>
+
+        <Text style={styles.recipeDescription}>
+          {item.description[language]}
+        </Text>
+
+        <Divider />
       </View>
     </ScrollView>
     // </SafeAreaView>
   );
 };
+
+const iconPress = () => {};
 
 const mapStateToProps = (state) => ({
   language: state.language,

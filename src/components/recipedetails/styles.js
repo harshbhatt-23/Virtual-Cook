@@ -13,29 +13,36 @@ const styles = StyleSheet.create({
     height: 300,
   },
   content: {
-    alignItems: "center",
     justifyContent: "flex-start",
     padding: 16,
   },
   recipeName: {
     fontSize: 24,
     fontWeight: "bold",
-    marginBottom: 8,
+    marginVertical: 6,
+    color: "#36454F",
   },
   categoryName: {
     fontSize: 18,
     fontWeight: "bold",
-    color: "#777",
+    textAlign: "left",
+    color: "#36454F",
   },
   prepTime: {
-    fontSize: 20,
+    fontSize: 16,
     fontWeight: "bold",
-    color: "#777",
-    marginBottom: 4,
+    color: "#000",
   },
-  description: {
-    fontSize: 18,
+  fabContainer: {
+    flexDirection: "row",
+    justifyContent: "flex-end",
+    alignItems: "flex-end",
+  },
+  recipeDescription: {
+    fontSize: 16,
+    color: "#000",
     marginBottom: 16,
+    marginLeft: 20,
   },
   backButton: {
     position: "absolute",
@@ -53,6 +60,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   fab: {
+    alignSelf: "center",
     position: "relative",
     margin: 16,
     right: 0,
