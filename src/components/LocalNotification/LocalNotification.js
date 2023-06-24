@@ -2,32 +2,19 @@ import { View, Text, Platform, Pressable } from "react-native";
 import { Switch } from "react-native-paper";
 import { useEffect, useState } from "react";
 import * as Notifications from "expo-notifications";
-import { async } from "@firebase/util";
 import styles from "./styles";
 import { connect } from "react-redux";
 import { setLanguage } from "../redux/actions";
+import { async } from "@firebase/util";
 
 const LocalNotification = ({ language, setLanguage }) => {
-  const localNotificationLabel = {
-    en: {
-      notification: "Notification:",
-      notificationBody: "Get daily receipe notification",
-      allowNotification: "Allow Notification",
-    },
-    fr: {
-      notification: "Notification:",
-      notificationBody: "Obtenez une notification de recette quotidienne",
-      allowNotification: "Autoriser la notification",
-    },
-  };
-
   const [reminder, setReminder] = useState(false);
   const [schedule, setSchedule] = useState([]);
 
-  const handleReminderPress = async () => {
-    if (!reminder) {
-      const schedule = await scheduleReminder();
-      if (schedule) {
+  const handleReminderPress = async (value) => {
+    if (value) {
+      const newSchedule = await scheduleReminder(language);
+      if (newSchedule) {
         setReminder(true);
         setSchedule(await getSchedule());
       }
@@ -54,6 +41,31 @@ const LocalNotification = ({ language, setLanguage }) => {
     getSchedule();
   }, []);
 
+  useEffect(() => {
+    // Update notification when language changes
+    updateNotificationContent();
+  }, [language]);
+
+  const updateNotificationContent = async () => {
+    if (reminder) {
+      await cancelReminder();
+      await scheduleReminder(language);
+    }
+  };
+
+  const localNotificationLabel = {
+    en: {
+      notification: "Notification:",
+      notificationBody: "Get daily recipe notification",
+      allowNotification: "Allow Notification",
+    },
+    fr: {
+      notification: "Notification:",
+      notificationBody: "Obtenez une notification de recette quotidienne",
+      allowNotification: "Autoriser la notification",
+    },
+  };
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>
@@ -70,13 +82,16 @@ const LocalNotification = ({ language, setLanguage }) => {
             {localNotificationLabel[language].allowNotification}
           </Text>
         </Pressable>
-        <Switch value={reminder} onValueChange={handleReminderPress} />
+        <Switch
+          value={reminder}
+          onValueChange={(value) => handleReminderPress(value)}
+        />
       </View>
     </View>
   );
 };
 
-async function scheduleReminder() {
+async function scheduleReminder(language) {
   try {
     const permissions = await Notifications.getPermissionsAsync();
 
@@ -94,22 +109,40 @@ async function scheduleReminder() {
       }
     }
 
+    const notificationContent = {
+      en: {
+        notiTitle: "Time to Cook",
+        notiBody: "Check out today's recipe",
+      },
+      fr: {
+        notiTitle: "Il est temps de cuisiner",
+        notiBody: "Découvrez la recette du jour",
+      },
+    };
+
+    const existingNotifications = await Notifications.getAllScheduledNotificationsAsync();
+    const existingReminder = existingNotifications.find(
+      (notification) => notification.content.data.type === "reminder"
+    );
+
+    if (existingReminder) {
+      await Notifications.cancelScheduledNotificationAsync(existingReminder.identifier);
+    }
+
     const id = await Notifications.scheduleNotificationAsync({
       content: {
-        title: "Time to Cook",
-        body: "Check out today's receipe",
+        title: notificationContent[language].notiTitle,
+        body: notificationContent[language].notiBody,
         sound: true,
         priority: Notifications.AndroidNotificationPriority.HIGH,
         badge: 0,
         data: {
-          // userId: 1121550,
-          // userName: "HarshBhatt",
           type: "reminder",
         },
       },
       trigger: {
-        hour: 22, // 9 am
-        minute: 4,
+        hour: 12, // 7 PM (change the desired hour here)
+        minute: 15,
         repeats: true, // repeat every day
       },
     });
@@ -128,9 +161,9 @@ async function cancelReminder() {
   const schedule = await getSchedule();
   let cancelled = false;
   for (const item of schedule) {
-    if (item.type == "reminder") {
+    if (item.type === "reminder") {
       try {
-        await Notifications.cancelAllScheduledNotificationsAsync(item.id);
+        await Notifications.cancelScheduledNotificationAsync(item.id);
       } catch {}
 
       cancelled = true;
@@ -140,13 +173,12 @@ async function cancelReminder() {
 }
 
 async function getSchedule() {
-  const scheduleNotifications =
-    await Notifications.getAllScheduledNotificationsAsync();
+  const scheduleNotifications = await Notifications.getAllScheduledNotificationsAsync();
   const schedule = [];
-  scheduleNotifications.forEach((scheduleNotifications) => {
+  scheduleNotifications.forEach((scheduleNotification) => {
     schedule.push({
-      id: scheduleNotifications.identifier,
-      type: scheduleNotifications.content.data.type,
+      id: scheduleNotification.identifier,
+      type: scheduleNotification.content.data.type,
     });
   });
   return schedule;
