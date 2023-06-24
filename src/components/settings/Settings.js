@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { connect } from "react-redux";
 import { setLanguage, setMeasurement } from "../redux/actions";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
-import { Button, Switch } from "react-native-paper";
+import { Button, Divider, Switch } from "react-native-paper";
 import style from "./styles";
 import LocalNotification from "../LocalNotification/LocalNotification";
 
@@ -50,12 +50,11 @@ const SettingsScreen = ({ language, setLanguage, measurement, setMeasurement }) 
         </Text>
         <Switch value={isSwitchOn} onValueChange={onToggleSwitch} />
       </View>
-
-      <View style={style.lineStyle} />
+      <Divider/>
 
       <LocalNotification />
 
-      <View style={style.lineStyle} />
+      <Divider/>
 
       <Text style={style.title}>{settingsLabel[language].measurements}</Text>
       <View style={style.switch}>
