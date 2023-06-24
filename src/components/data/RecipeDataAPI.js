@@ -102,6 +102,7 @@ export function getRecipesByIngredientName(ingredientName) {
 }
 
 export function getRecipesByCategoryName(categoryName, language) {
+    //console.log(categoryName + "----caliing");
     const nameUpper = categoryName.toUpperCase();
     const recipesArray = [];
     categories.map(data => {
@@ -110,7 +111,9 @@ export function getRecipesByCategoryName(categoryName, language) {
         if (categoryDisplayName.toUpperCase().includes(nameUpper)) {
             const recipes = getRecipes(data.id);
             recipes.map(item => {
-                recipesArray.push(item);
+                const recipeWithCategory = { ...item, categoryName: categoryDisplayName };
+                recipesArray.push(recipeWithCategory);
+                //recipesArray.push(item);
             });
         }
     });

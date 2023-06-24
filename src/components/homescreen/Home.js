@@ -1,21 +1,12 @@
-import React from 'react';
-import { connect } from 'react-redux';
-import { Text, StyleSheet, View } from "react-native";
+import { Button } from "react-native-paper";
+import React from "react";
+import { View, Text, StyleSheet } from "react-native";
+import style from "./styles";
 
-const Home = ({ language }) => {
+export default function Home({ navigation }) {
   return (
-    <Text style={styles.container}></Text>
-  )
-};
-
-const mapStateToProps = (state) => ({
-  language: state.language,
-});
-
-const styles = StyleSheet.create({
-  container: {
-    marginTop: 100,
-  }
-});
-
-export default connect(mapStateToProps)(Home);
+    <View style={style.container}>
+      <Text>Home Screen</Text>
+    </View>
+  );
+}

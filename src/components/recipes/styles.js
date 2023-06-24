@@ -66,6 +66,31 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     marginTop: 20,
   },
+  closeModalButton: {
+    marginTop: 8,
+  },
+  buttonText: {
+    color: '#FFFFFF',
+    fontSize: 16,
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  modal: {
+    flex: 1,
+    // backgroundColor: '#FFFFFF',
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    //backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  buttonContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: '80%'
+  }
 });
 
 export default styles;

@@ -72,6 +72,9 @@ const styles = StyleSheet.create({
     borderColor: "black",
     marginVertical: 10,
   },
+  headerTitle: {
+    fontWeight: "bold",
+  },
 });
 
 export default styles;

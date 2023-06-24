@@ -7,7 +7,6 @@ export default function FavouriteScreen({ navigation }) {
   return (
     <View style={style.container}>
       <Text>Favourites Screen</Text>
-      <Button mode="contained">This is Favourites Page</Button>
     </View>
   );
 }
