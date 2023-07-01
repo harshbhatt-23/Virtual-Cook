@@ -4,7 +4,6 @@ import {
   Text,
   TouchableOpacity,
   Image,
-  SafeAreaView,
   ScrollView,
   BackHandler,
 } from "react-native";
@@ -24,8 +23,6 @@ import {
   Divider,
 } from "react-native-paper";
 import styles from "./styles";
-import HorizontalLine from "../HorizontalLine/HorizontalLine";
-import { HeaderBackButton } from "@react-navigation/stack";
 import * as Speech from "expo-speech";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 
@@ -41,7 +38,9 @@ const RecipeDetails = ({ route, language, measurement }) => {
   const handleBackPress = () => {
     Speech.stop();
     // Navigate back to RecipesScreen
-    navigation.goBack();
+    const sourceScreen = route.params.sourceScreen;
+    navigation.navigate(sourceScreen);
+    return true;
   };
 
   const displayWords = {
