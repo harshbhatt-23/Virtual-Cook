@@ -1,13 +1,21 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { View, Text, Modal, StyleSheet } from "react-native";
 import { Checkbox, Button } from "react-native-paper";
 import { connect } from "react-redux";
 
-const FilterDialog = ({ visible, onDismiss, onSelectCategories, language }) => {
-  const [breakfastChecked, setBreakfastChecked] = useState(false);
-  const [lunchChecked, setLunchChecked] = useState(false);
-  const [dinnerChecked, setDinnerChecked] = useState(false);
-  const [dessertChecked, setDessertChecked] = useState(false);
+const FilterDialog = ({
+  visible,
+  onDismiss,
+  onSelectCategories,
+  language,
+}) => {
+  const [selectedCategories, setSelectedCategories] = useState([]);
+
+  useEffect(() => {
+    if (!visible) {
+      setSelectedCategories([]);
+    }
+  }, [visible]);
 
   const displayName = {
     en: {
@@ -15,7 +23,7 @@ const FilterDialog = ({ visible, onDismiss, onSelectCategories, language }) => {
       lunch: "Lunch",
       dinner: "Dinner",
       dessert: "Dessert",
-      selectCategoryTitle: "Select Categorie(s):",
+      selectCategoryTitle: "Select Category(s):",
       apply: "Apply",
       cancel: "Cancel",
     },
@@ -24,35 +32,67 @@ const FilterDialog = ({ visible, onDismiss, onSelectCategories, language }) => {
       lunch: "Déjeunere",
       dinner: "Dîner",
       dessert: "Dessert",
-      selectCategoryTitle: "Sélectionnez la ou les catégories:",
+      selectCategoryTitle: "Sélectionnez la ou les catégories :",
       apply: "Appliquer",
       cancel: "Annuler",
     },
   };
 
-  const handleDoneButton = () => {
-    const selectedCategories = [];
-    if (breakfastChecked) {
-      selectedCategories.push(displayName[language].breakfast);
-    }
-    if (lunchChecked) {
-      selectedCategories.push(displayName[language].lunch);
-    }
-    if (dinnerChecked) {
-      selectedCategories.push(displayName[language].dinner);
-    }
-    if (dessertChecked) {
-      selectedCategories.push(displayName[language].dessert);
-    }
+  const handleDoneButton = useCallback(() => {
+    const selectedCategoriesForLanguage = selectedCategories.map((category) => {
+      return displayName[language][category];
+    });
 
-    onSelectCategories(selectedCategories);
-    console.log("Selectred Categories" + selectedCategories);
-    onDismiss();
-  };
+    setSelectedCategories(selectedCategoriesForLanguage);
+    console.log(selectedCategoriesForLanguage);
 
-  const handleCancelButton = () => {
+    onSelectCategories(selectedCategoriesForLanguage);
     onDismiss();
-  };
+  }, [onDismiss, onSelectCategories, selectedCategories, language]);
+  
+
+  const handleCancelButton = useCallback(() => {
+    setSelectedCategories([]);
+    onDismiss();
+  }, [onDismiss]);
+
+  const handleCategoryChange = useCallback(
+    (category) => {
+      const lowerCaseCategory = category.toLowerCase();
+      setSelectedCategories((prevSelectedCategories) => {
+        if (prevSelectedCategories.includes(lowerCaseCategory)) {
+          return prevSelectedCategories.filter((c) => c !== lowerCaseCategory);
+        } else {
+          return [...prevSelectedCategories, lowerCaseCategory];
+        }
+      });
+    },
+    []
+  );
+
+  const renderCheckboxItem = useCallback(
+    (category) => {
+      const lowercaseCategory = category.toLowerCase();
+      console.log(selectedCategories)
+      return (
+        <Checkbox.Item
+          key={lowercaseCategory}
+          label={displayName[language][lowercaseCategory]}
+          status={
+            selectedCategories.includes(lowercaseCategory)
+              ? "checked"
+              : "unchecked"
+          }
+          onPress={() => handleCategoryChange(lowercaseCategory)}
+        />
+      );
+    },
+    [handleCategoryChange, language, selectedCategories]
+  );
+
+  useEffect(() => {
+    setSelectedCategories([]);
+  }, [visible]);
 
   return (
     <Modal
@@ -66,27 +106,10 @@ const FilterDialog = ({ visible, onDismiss, onSelectCategories, language }) => {
           <Text style={styles.title}>
             {displayName[language].selectCategoryTitle}
           </Text>
-          <Checkbox.Item
-            label={displayName[language].breakfast}
-            status={breakfastChecked ? "checked" : "unchecked"}
-            onPress={() => setBreakfastChecked(!breakfastChecked)}
-          />
-          <Checkbox.Item
-            label={displayName[language].lunch}
-            status={lunchChecked ? "checked" : "unchecked"}
-            onPress={() => setLunchChecked(!lunchChecked)}
-          />
-          <Checkbox.Item
-            label={displayName[language].dinner}
-            status={dinnerChecked ? "checked" : "unchecked"}
-            onPress={() => setDinnerChecked(!dinnerChecked)}
-          />
-          <Checkbox.Item
-            label={displayName[language].dessert}
-            status={dessertChecked ? "checked" : "unchecked"}
-            onPress={() => setDessertChecked(!dessertChecked)}
-          />
-
+          {renderCheckboxItem("breakfast")}
+          {renderCheckboxItem("lunch")}
+          {renderCheckboxItem("dinner")}
+          {renderCheckboxItem("dessert")}
           <View style={styles.buttonContainer}>
             <Button onPress={handleCancelButton}>
               {displayName[language].cancel}
@@ -122,18 +145,10 @@ const styles = StyleSheet.create({
     marginBottom: 8,
     marginTop: 8,
   },
-  content: {
-    marginBottom: 16,
-  },
-  actionsContainer: {
+  buttonContainer: {
+    marginTop: 16,
     flexDirection: "row",
     justifyContent: "flex-end",
-  },
-  buttonContainer: {
-    marginLeft: 10,
-    marginRight: 10,
-    flexDirection: "row",
-    justifyContent: "flex-end", // Align buttons to the end
   },
 });
 

@@ -21,13 +21,22 @@ import {
   MD3Colors,
   Snackbar,
   Divider,
+  Button,
 } from "react-native-paper";
 import styles from "./styles";
 import * as Speech from "expo-speech";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
+import { addToFavorites, removeFromFavorites } from "../redux/actions";
 
-const RecipeDetails = ({ route, language, measurement }) => {
-  const [showSnackbar, setShowSnackbar] = React.useState(false);
+const RecipeDetails = ({
+  route,
+  language,
+  measurement,
+  addToFavorites,
+  removeFromFavorites,
+  favoriteRecipes,
+}) => {
+  const [showSnackbar, setShowSnackbar] = useState(false);
   const [isClicked, setIsClicked] = useState(false);
   const [isFirstIcon, setIsFirstIcon] = useState(false);
 
@@ -50,6 +59,7 @@ const RecipeDetails = ({ route, language, measurement }) => {
       Ingredients: "Ingredients",
       Directions: "Directions",
       Description: "Description",
+      addToFavoritesButton: "Add to favorite",
     },
     fr: {
       PrepTime: "Temps de préparation",
@@ -57,6 +67,7 @@ const RecipeDetails = ({ route, language, measurement }) => {
       Ingredients: "Ingrédients",
       Directions: "Directions",
       Description: "Description",
+      addToFavoritesButton: "Ajouter aux Favoris",
     },
   };
 
@@ -116,7 +127,7 @@ const RecipeDetails = ({ route, language, measurement }) => {
     }
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     const handleBackPress = () => {
       stopTextToSpeech();
       return false;
@@ -147,6 +158,19 @@ const RecipeDetails = ({ route, language, measurement }) => {
     setShowSnackbar(false);
   };
 
+  const handleFavoritePress = (id) => {
+    if (isRecipeFavorite(id)) {
+      removeFromFavorites(id);
+    } else {
+      addToFavorites(id);
+    }
+  };
+
+  const isRecipeFavorite = (id) => {
+    const isFavorite = favoriteRecipes.some((recipe) => recipe === id);
+    return isFavorite;
+  };
+
   return (
     <ScrollView stickyHeaderIndices={[0]}>
       <Appbar.Header mode="center-aligned">
@@ -157,7 +181,9 @@ const RecipeDetails = ({ route, language, measurement }) => {
         />
         <Appbar.Content title={item.title[language]} />
       </Appbar.Header>
-      <Image style={styles.image} source={{ uri: item.photo_url }} />
+      <View style={styles.imageContainer}>
+        <Image style={styles.image} source={{ uri: item.photo_url }} />
+      </View>
 
       {/* Breakfast */}
       <View style={styles.content}>
@@ -214,7 +240,7 @@ const RecipeDetails = ({ route, language, measurement }) => {
             }}
           >
             {isFirstIcon
-              ? "Preperation Time: " + item.preptime
+              ? "Preparation Time: " + item.preptime
               : "Cooking Time: " + item.cooktime}
           </Snackbar>
         </View>
@@ -306,17 +332,39 @@ const RecipeDetails = ({ route, language, measurement }) => {
         </Text>
 
         <Divider />
+
+        <TouchableOpacity>
+          <View style={{ flexDirection: "row", alignItems: "center",padding:16 }}>
+            <Button
+              mode="elevated"
+              onPress={() => handleFavoritePress(item.recipeId)}
+              icon={({ }) =>
+                isRecipeFavorite(item.recipeId) ? (
+                  <Icon name="cards-heart" color="red" size={24} />
+                ) : (
+                  <Icon name="cards-heart-outline" color="black" size={24} />
+                )
+              }
+            >
+              {displayWords[language].addToFavoritesButton}
+            </Button>
+          </View>
+        </TouchableOpacity>
       </View>
     </ScrollView>
     // </SafeAreaView>
   );
 };
 
-const iconPress = () => {};
-
 const mapStateToProps = (state) => ({
   language: state.language,
   measurement: state.measurement,
+  favoriteRecipes: state.favoriteRecipes,
 });
 
-export default connect(mapStateToProps)(RecipeDetails);
+const mapDispatchToProps = {
+  addToFavorites,
+  removeFromFavorites,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(RecipeDetails);

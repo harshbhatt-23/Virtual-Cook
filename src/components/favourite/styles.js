@@ -1,19 +1,19 @@
 import { StyleSheet } from "react-native";
 
 const styles = StyleSheet.create({
+  cardContainer: {
+    marginBottom: 16,
+  },
   container: {
     flex: 1,
     backgroundColor: "#fff",
     padding: 16,
-    marginTop:50
-  },
-  cardContainer: {
-    marginBottom: 16,
+    marginTop: 45,
   },
   card: {
-    backgroundColor: "#fff",
+    backgroundColor: "#eeeeee",
     borderRadius: 8,
-    shadowColor: "#000",
+    shadowColor: "#B3B3B3",
     shadowOffset: {
       width: 0,
       height: 2,
@@ -23,18 +23,39 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   cardContent: {
+    marginTop: 15,
     padding: 16,
+    flexDirection: "row",
+    flex: 8,
+  },
+  imageContainer: {
+    flex: 2,
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
+    marginRight: 10,
+    borderRadius: 75,
   },
   cardTextContainer: {
+    flex: 8,
     flexDirection: "row",
-    justifyContent: "space-between",
     alignItems: "center",
+    justifyContent: "center",
+  },
+  image: {
+    width: 80,
+    height: 80,
+    borderRadius: 75,
   },
   textContainer: {
-    flex: 1,
+    flex: 8,
+    marginLeft:8
+  },
+  buttonContainer: {
+    flex: 2,
   },
   title: {
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: "bold",
     marginBottom: 4,
   },

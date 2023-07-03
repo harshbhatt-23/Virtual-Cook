@@ -28,7 +28,7 @@ const styles = StyleSheet.create({
   buttoncontainer: {
     //flex: 1,
   },
-
+  
   recipeContainer: RecipeCard.container,
   photo: RecipeCard.photo,
   title: RecipeCard.title,
@@ -70,10 +70,10 @@ const styles = StyleSheet.create({
     marginTop: 8,
   },
   buttonText: {
-    color: '#FFFFFF',
+    color: "#FFFFFF",
     fontSize: 16,
-    fontWeight: 'bold',
-    textAlign: 'center',
+    fontWeight: "bold",
+    textAlign: "center",
   },
   modal: {
     flex: 1,
@@ -81,16 +81,16 @@ const styles = StyleSheet.create({
   },
   modalContainer: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     //backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   buttonContainer: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    width: '80%'
-  }
+    justifyContent: "center",
+    alignItems: "center",
+    width: "80%",
+  },
 });
 
 export default styles;

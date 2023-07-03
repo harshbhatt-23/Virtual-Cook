@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, TouchableHighlight, FlatList, Image } from "react-native";
 import style from "./styles";
-import { Searchbar, Button } from "react-native-paper";
+import { Searchbar, Button, IconButton } from "react-native-paper";
 import { recipes } from "../../components/data/RecipeData";
 import { getCategoryName } from "../../components/data/RecipeDataAPI";
 import { connect } from "react-redux";
@@ -11,7 +11,7 @@ import SortDialog from "../SortDialogBox/SortDialog";
 //The code for filtering and sorting recipe by name or cataegory
 const RecipesScreen = ({ language, navigation }) => {
   const handleRecipePress = (item) => {
-    navigation.navigate("RecipeDetails", { item: item });
+    navigation.navigate("RecipeDetails", { item, sourceScreen: "Recipes" });
   };
 
   const menuLabels = {
@@ -84,24 +84,26 @@ const RecipesScreen = ({ language, navigation }) => {
     setSearchQuery(text);
   };
 
-  const renderRecipes = ({ item }) => (
-    <TouchableHighlight
-      underlayColor="rgba(0,0,0,0.2)"
-      onPress={() => handleRecipePress(item)}
-    >
-      <>
-        <View style={style.recipeContainer}>
-          <Image style={style.photo} source={{ uri: item.photo_url }} />
-          <Text style={style.title} icon="volume-high">
-            {item.title[language]}
-          </Text>
-          <Text style={style.category}>
-            {getCategoryName(item.categoryId, language)}
-          </Text>
-        </View>
-      </>
-    </TouchableHighlight>
-  );
+  const renderRecipes = ({ item }) => {
+    return (
+      <TouchableHighlight
+        underlayColor="rgba(0,0,0,0.2)"
+        onPress={() => handleRecipePress(item)}
+      >
+        <>
+          <View style={style.recipeContainer}>
+            <Image style={style.photo} source={{ uri: item.photo_url }} />
+            <Text style={style.title} icon="volume-high">
+              {item.title[language]}
+            </Text>
+            <Text style={style.category}>
+              {getCategoryName(item.categoryId, language)}
+            </Text>
+          </View>
+        </>
+      </TouchableHighlight>
+    );
+  };
 
   useEffect(() => {
     // Filter recipes when selectedFilterCategories or searchQuery changes
@@ -116,7 +118,7 @@ const RecipesScreen = ({ language, navigation }) => {
     if (selectedFilterCategories.length > 0) {
       filteredRecipes = filteredRecipes.filter((recipe) =>
         selectedFilterCategories.includes(
-          getCategoryName(recipe.categoryId, language)
+          getCategoryName(recipe.categoryId, language) //.toLowerCase()
         )
       );
     }
@@ -158,13 +160,14 @@ const RecipesScreen = ({ language, navigation }) => {
         visible={dialogVisible}
         onDismiss={hideDialog}
         onSelectCategories={handleSelectCategories}
+        language={language}
       />
 
       <SortDialog
         visible={sortDialogVisible}
         onDismiss={hideSortDialog}
         onSelectSortOption={handleSorting}
-        onCancelButton={handleCancelButton}
+        language={language}
       />
 
       <View style={style.buttonMainContainer}>

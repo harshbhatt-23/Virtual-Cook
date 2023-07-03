@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, FlatList, TouchableOpacity, Image } from "react-native";
 import { connect } from "react-redux";
-import { Button } from "react-native-paper";
+import { Button, IconButton } from "react-native-paper";
 import { recipes } from "../../components/data/RecipeData";
 import { getCategoryName } from "../../components/data/RecipeDataAPI";
 import { removeFromFavorites } from "../redux/actions";
 import styles from "./styles";
 import emptyListImage from "../../../assets/empty-list-image.png";
+import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 
 const FavoriteScreen = ({
   language,
@@ -20,13 +21,15 @@ const FavoriteScreen = ({
   const menuLabels = {
     en: {
       remove: "Remove",
-      emptyList:"Your favorites list is empty.",
-      emptyListSub:"Explore recipes and add them to favourtits to show them here!"
+      emptyList: "Your favorites list is empty.",
+      emptyListSub:
+        "Explore recipes and add them to favourtits to show them here!",
     },
     fr: {
       remove: "Retirer",
-      emptyList:"Votre liste de favoris est vide.",
-      emptyListSub:"Explorez des recettes et ajoutez-les à vos favoris pour les afficher ici."
+      emptyList: "Votre liste de favoris est vide.",
+      emptyListSub:
+        "Explorez des recettes et ajoutez-les à vos favoris pour les afficher ici.",
     },
   };
 
@@ -64,6 +67,9 @@ const FavoriteScreen = ({
     >
       <View style={styles.card}>
         <View style={styles.cardContent}>
+          <View style={styles.imageContainer}>
+            <Image style={styles.image} source={{ uri: item.photo_url }} />
+          </View>
           <View style={styles.cardTextContainer}>
             <View style={styles.textContainer}>
               <Text style={styles.title}>{item.title[language]}</Text>
@@ -71,13 +77,13 @@ const FavoriteScreen = ({
                 {getCategoryName(item.categoryId, language)}
               </Text>
             </View>
-            <Button
-              icon="close-circle-outline"
-              mode="elevated"
-              onPress={() => handleRemoveFavorite(item.recipeId)}
-            >
-              {menuLabels[language].remove}
-            </Button>
+            <View style={styles.buttonContainer}>
+              <TouchableOpacity
+                onPress={() => handleRemoveFavorite(item.recipeId)}
+              >
+                <Icon name="close-circle-outline" size={40} color="red" />
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
       </View>
@@ -89,7 +95,7 @@ const FavoriteScreen = ({
       <Image source={emptyListImage} style={styles.emptyListImage} />
       <Text style={styles.emptyListText}>{menuLabels[language].emptyList}</Text>
       <Text style={styles.emptyListTextSub}>
-      {menuLabels[language].emptyListSub}
+        {menuLabels[language].emptyListSub}
       </Text>
     </View>
   );
