@@ -1,12 +1,6 @@
 import { StyleSheet } from "react-native";
 
 const styles = StyleSheet.create({
-  container: {
-    marginVertical: 40,
-    justifyContent: "center",
-    padding: 20,
-  },
-
   switch: {
     flexDirection: "row",
     justifyContent: "space-between",
@@ -29,14 +23,6 @@ const styles = StyleSheet.create({
     color: "#777777",
     marginBottom: 10,
   },
-
-  // horizontal line style
-  lineStyle: {
-    borderWidth: 0.5,
-    borderColor: "black",
-    marginVertical: 10,
-  },
-
   options: {
     container: {
       alignItems: "center",

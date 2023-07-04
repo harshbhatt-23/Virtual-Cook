@@ -7,9 +7,11 @@ import { getCategoryName } from "../../components/data/RecipeDataAPI";
 import { connect } from "react-redux";
 import FilterDialog from "../FilterDialogBox/FilterDialog";
 import SortDialog from "../SortDialogBox/SortDialog";
+import nonVegImage from "../../../assets/non-veg-48.png";
+import vegImage from "../../../assets/veg-48.png";
 
 //The code for filtering and sorting recipe by name or cataegory
-const RecipesScreen = ({ language, navigation }) => {
+const RecipesScreen = ({ language, navigation, veg }) => {
   const handleRecipePress = (item) => {
     navigation.navigate("RecipeDetails", { item, sourceScreen: "Recipes" });
   };
@@ -43,7 +45,6 @@ const RecipesScreen = ({ language, navigation }) => {
 
   //Search query
   const [searchQuery, setSearchQuery] = useState("");
-
   const [getRecipeCount, setRecipeCount] = useState(recipes.length);
   const [dialogVisible, setDialogVisible] = useState(false);
   const [sortDialogVisible, setSortDialogVisible] = useState(false);
@@ -96,9 +97,15 @@ const RecipesScreen = ({ language, navigation }) => {
             <Text style={style.title} icon="volume-high">
               {item.title[language]}
             </Text>
-            <Text style={style.category}>
-              {getCategoryName(item.categoryId, language)}
-            </Text>
+            <View style={style.typeWithIcon}>
+              <Text style={style.category}>
+                {getCategoryName(item.categoryId, language)}
+              </Text>
+              <Image
+                source={item.isVeg ? vegImage : nonVegImage}
+                style={style.dietImage}
+              />
+            </View>
           </View>
         </>
       </TouchableHighlight>
@@ -108,11 +115,18 @@ const RecipesScreen = ({ language, navigation }) => {
   useEffect(() => {
     // Filter recipes when selectedFilterCategories or searchQuery changes
     filterRecipes();
-  }, [selectedFilterCategories, searchQuery, sortOption]);
+  }, [selectedFilterCategories, searchQuery, sortOption, veg]);
 
   const filterRecipes = () => {
     //let filteredRecipes = recipes;
     let filteredRecipes = [...recipes];
+
+    // Apply veg filter
+    if (veg === true) {
+      filteredRecipes = filteredRecipes.filter(
+        (recipe) => recipe.isVeg === veg
+      );
+    }
 
     // Apply category filter
     if (selectedFilterCategories.length > 0) {
@@ -210,6 +224,7 @@ const RecipesScreen = ({ language, navigation }) => {
 
 const mapStateToProps = (state) => ({
   language: state.language,
+  veg: state.veg,
 });
 
 export default connect(mapStateToProps)(RecipesScreen);

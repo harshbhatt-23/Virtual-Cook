@@ -28,7 +28,7 @@ const styles = StyleSheet.create({
   buttoncontainer: {
     //flex: 1,
   },
-  
+
   recipeContainer: RecipeCard.container,
   photo: RecipeCard.photo,
   title: RecipeCard.title,
@@ -90,6 +90,18 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     width: "80%",
+  },
+  dietImage: {
+    width: 20,
+    height: 20,
+    marginLeft: 5,
+    marginTop: 5,
+    marginBottom: 5,
+  },
+  typeWithIcon: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
   },
 });
 

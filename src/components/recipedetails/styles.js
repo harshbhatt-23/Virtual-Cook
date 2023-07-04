@@ -75,6 +75,18 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontWeight: "bold",
   },
+  dietImage: {
+    width: 20,
+    height: 20,
+    marginLeft: 5,
+    marginTop: 5,
+    marginBottom: 5,
+  },
+  typeWithIcon: {
+    flexDirection: "row",
+    justifyContent: "flex-start",
+    alignItems: "center",
+  },
 });
 
 export default styles;

@@ -5,6 +5,7 @@ const initialState = {
   language: "en",
   measurement: "us_imperial",
   favoriteRecipes: [],
+  veg: false,
 };
 
 // Define reducer function
@@ -31,6 +32,11 @@ const reducer = (state = initialState, action) => {
         favoriteRecipes: state.favoriteRecipes.filter(
           (recipeId) => recipeId !== action.payload
         ),
+      };
+    case "SET_VEG":
+      return {
+        ...state,
+        veg: action.payload,
       };
 
     default:

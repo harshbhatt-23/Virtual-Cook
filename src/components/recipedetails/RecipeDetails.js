@@ -27,6 +27,8 @@ import styles from "./styles";
 import * as Speech from "expo-speech";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { addToFavorites, removeFromFavorites } from "../redux/actions";
+import nonVegImage from "../../../assets/non-veg-48.png";
+import vegImage from "../../../assets/veg-48.png";
 
 const RecipeDetails = ({
   route,
@@ -187,9 +189,15 @@ const RecipeDetails = ({
 
       {/* Breakfast */}
       <View style={styles.content}>
-        <Text style={styles.categoryName}>
-          {getCategoryName(item.categoryId, language)}
-        </Text>
+        <View style={styles.typeWithIcon}>
+          <Text style={styles.categoryName}>
+            {getCategoryName(item.categoryId, language)}
+          </Text>
+          <Image
+            source={item.isVeg ? vegImage : nonVegImage}
+            style={styles.dietImage}
+          />
+        </View>
 
         <View
           style={{
@@ -334,11 +342,13 @@ const RecipeDetails = ({
         <Divider />
 
         <TouchableOpacity>
-          <View style={{ flexDirection: "row", alignItems: "center",padding:16 }}>
+          <View
+            style={{ flexDirection: "row", alignItems: "center", padding: 16 }}
+          >
             <Button
               mode="elevated"
               onPress={() => handleFavoritePress(item.recipeId)}
-              icon={({ }) =>
+              icon={({}) =>
                 isRecipeFavorite(item.recipeId) ? (
                   <Icon name="cards-heart" color="red" size={24} />
                 ) : (
