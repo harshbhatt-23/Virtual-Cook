@@ -19,9 +19,10 @@ const SettingsScreen = ({
       changeLanguage: "Change Language:",
       selectTheme: "Dark Mode",
       enableDarkMode: "Enable Dark Mode",
-      changeToMetric: "Change to Metric",
+      changeToMetric: "Metric",
       changeToUsImperial: "Change to US/Imperial",
       measurements: "Measurements:",
+      measurementBody: "Default is US/Imperial",
       diet: "Dietery Restrictions:",
       veg: "Vegetarian only",
     },
@@ -29,9 +30,10 @@ const SettingsScreen = ({
       changeLanguage: "Changer de langue:",
       selectTheme: "Mode sombre",
       enableDarkMode: "Activer le mode sombre",
-      changeToMetric: "Changer en métrique",
+      changeToMetric: "Métrique",
       changeToUsImperial: "Changer pour US/Impérial",
       measurements: "Des mesures:",
+      measurementBody: "Par défaut, c'est US/Impérial",
       diet: "Restrictions alimentaires:",
       veg: "Végétarien seulement",
     },
@@ -70,7 +72,7 @@ const SettingsScreen = ({
       <Text style={style.title}>{settingsLabel[language].changeLanguage}</Text>
       <View style={style.switch}>
         <Text style={style.options.label}>
-          {isSwitchOn ? "Passer à l'anglais" : "Change to French"}
+          {isSwitchOn ? "Changer en français" : "Change to French"}
         </Text>
         <Switch value={isSwitchOn} onValueChange={onToggleSwitch} />
       </View>
@@ -80,12 +82,15 @@ const SettingsScreen = ({
 
       <Divider />
 
-      <Text style={style.title}>{settingsLabel[language].measurements}</Text>
+      <Text style={style.title}>
+      {settingsLabel[language].measurements}
+      </Text>
+      <Text style={style.description}>
+        {settingsLabel[language].measurementBody}
+      </Text>
       <View style={style.switch}>
         <Text style={style.options.label}>
-          {isSwitchOnMeasurement
-            ? settingsLabel[language].changeToUsImperial
-            : settingsLabel[language].changeToMetric}
+          {settingsLabel[language].changeToMetric}
         </Text>
         <Switch
           value={isSwitchOnMeasurement}
