@@ -1,11 +1,12 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { View, StyleSheet, Modal } from "react-native";
 import { Button, RadioButton, Text } from "react-native-paper";
 import { connect } from "react-redux";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 const SortDialog = ({ visible, onDismiss, onSelectSortOption, language }) => {
-  const [checked, setChecked] = React.useState("asc");
+  const [checked, setChecked] = useState("asc");
+  const [prevChecked, setPrevChecked] = useState(checked);
 
   const displayName = {
     en: {
@@ -26,14 +27,19 @@ const SortDialog = ({ visible, onDismiss, onSelectSortOption, language }) => {
     },
   };
 
-  const handleDoneButton = (checked) => {
-    console.log("Select Radio =>" + checked);
+  const handleDoneButton = () => {
+    setPrevChecked(checked);
     onSelectSortOption(checked);
     onDismiss();
   };
 
   const handleCancelButton = () => {
+    setChecked(prevChecked);
     onDismiss();
+  };
+
+  const handleRadioChange = (checked) => {
+    setChecked(checked);
   };
 
   return (
@@ -46,10 +52,7 @@ const SortDialog = ({ visible, onDismiss, onSelectSortOption, language }) => {
       <View style={styles.modalContainer}>
         <View style={styles.dialogContainer}>
           <Text style={styles.title}>{displayName[language].sortBy}</Text>
-          <RadioButton.Group
-            onValueChange={(checked) => setChecked(checked)}
-            value={checked}
-          >
+          <RadioButton.Group onValueChange={handleRadioChange} value={checked}>
             <View style={styles.radioContainer}>
               <MaterialCommunityIcons
                 name="sort-alphabetical-ascending"
@@ -58,10 +61,13 @@ const SortDialog = ({ visible, onDismiss, onSelectSortOption, language }) => {
                 style={styles.radioButtonIcon}
               />
 
-              <RadioButton.Item
-                label={displayName[language].AtoZ}
-                value="asc"
-              />
+              <View style={styles.radioButtonLabelContainer}>
+                <RadioButton.Item
+                  label={displayName[language].AtoZ}
+                  value="asc"
+                  labelStyle={styles.radioButtonLabel}
+                />
+              </View>
             </View>
 
             <View style={styles.radioContainer}>
@@ -72,18 +78,21 @@ const SortDialog = ({ visible, onDismiss, onSelectSortOption, language }) => {
                 style={styles.radioButtonIcon}
               />
 
-              <RadioButton.Item
-                label={displayName[language].ZtoA}
-                value="desc"
-              />
+              <View style={styles.radioButtonLabelContainer}>
+                <RadioButton.Item
+                  label={displayName[language].ZtoA}
+                  value="desc"
+                  labelStyle={styles.radioButtonLabel}
+                />
+              </View>
             </View>
           </RadioButton.Group>
 
           <View style={styles.buttonContainer}>
-            <Button onPress={() => handleCancelButton()}>
+            <Button onPress={handleCancelButton}>
               {displayName[language].cancel}
             </Button>
-            <Button onPress={() => handleDoneButton(checked)}>
+            <Button onPress={handleDoneButton}>
               {displayName[language].apply}
             </Button>
           </View>
@@ -105,7 +114,6 @@ const styles = StyleSheet.create({
     padding: 16,
     borderRadius: 25,
     width: "80%",
-    maxWidth: 400,
   },
   title: {
     fontSize: 18,
@@ -128,10 +136,23 @@ const styles = StyleSheet.create({
     justifyContent: "flex-end", // Align buttons to the end
   },
   radioContainer: {
-    marginLeft: 10,
-    marginRight: 10,
     flexDirection: "row",
     alignItems: "center",
+    marginLeft: 10,
+    marginRight: 10,
+  },
+  radioButtonIcon: {
+    marginRight: 8,
+  },
+  radioButtonItem: {
+    flex: 1,
+  },
+  radioButtonLabelContainer: {
+    flex: 1,
+    marginLeft: 8, // Adjust the margin as needed
+  },
+  radioButtonLabel: {
+    fontSize: 16,
   },
 });
 

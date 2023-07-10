@@ -174,6 +174,7 @@ const RecipesScreen = ({ language, navigation, veg }) => {
         visible={dialogVisible}
         onDismiss={hideDialog}
         onSelectCategories={handleSelectCategories}
+        initialSelectedCategories={selectedFilterCategories}
         language={language}
       />
 

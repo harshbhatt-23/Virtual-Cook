@@ -7,92 +7,86 @@ const FilterDialog = ({
   visible,
   onDismiss,
   onSelectCategories,
+  initialSelectedCategories = [],
   language,
 }) => {
-  const [selectedCategories, setSelectedCategories] = useState([]);
-
-  useEffect(() => {
-    if (!visible) {
-      setSelectedCategories([]);
-    }
-  }, [visible]);
-
   const displayName = {
     en: {
-      breakfast: "Breakfast",
-      lunch: "Lunch",
-      dinner: "Dinner",
-      dessert: "Dessert",
+      Breakfast: "Breakfast",
+      Lunch: "Lunch",
+      Dinner: "Dinner",
+      Dessert: "Dessert",
       selectCategoryTitle: "Select Category(s):",
       apply: "Apply",
       cancel: "Cancel",
     },
     fr: {
-      breakfast: "Petit-déjeuner",
-      lunch: "Déjeunere",
-      dinner: "Dîner",
-      dessert: "Dessert",
+      Breakfast: "Petit-déjeuner",
+      Lunch: "Déjeunere",
+      Dinner: "Dîner",
+      Dessert: "Dessert",
       selectCategoryTitle: "Sélectionnez la ou les catégories :",
       apply: "Appliquer",
       cancel: "Annuler",
     },
   };
 
+  const [selectedCategories, setSelectedCategories] = useState([]);
+
+  useEffect(() => {
+    if (visible) {
+      setSelectedCategories(initialSelectedCategories); // Initialize selectedCategories with initialSelectedCategories
+    } else {
+      setSelectedCategories([]); // Reset selectedCategories when dialog is dismissed
+    }
+  }, [visible, initialSelectedCategories]);
+
   const handleDoneButton = useCallback(() => {
     const selectedCategoriesForLanguage = selectedCategories.map((category) => {
       return displayName[language][category];
     });
 
-    setSelectedCategories(selectedCategoriesForLanguage);
-    console.log(selectedCategoriesForLanguage);
-
     onSelectCategories(selectedCategoriesForLanguage);
     onDismiss();
   }, [onDismiss, onSelectCategories, selectedCategories, language]);
-  
 
-  const handleCancelButton = useCallback(() => {
-    setSelectedCategories([]);
+  const handleCancelButton = () => {
+    setSelectedCategories((prevSelectedCategories) => {
+      // Restore previously selected categories
+      return [...prevSelectedCategories];
+    });
     onDismiss();
-  }, [onDismiss]);
+  };
 
-  const handleCategoryChange = useCallback(
-    (category) => {
-      const lowerCaseCategory = category.toLowerCase();
-      setSelectedCategories((prevSelectedCategories) => {
-        if (prevSelectedCategories.includes(lowerCaseCategory)) {
-          return prevSelectedCategories.filter((c) => c !== lowerCaseCategory);
-        } else {
-          return [...prevSelectedCategories, lowerCaseCategory];
-        }
-      });
-    },
-    []
-  );
+  const handleCategoryChange = (category) => {
+    setSelectedCategories((prevSelectedCategories) => {
+      const isCategorySelected = prevSelectedCategories.includes(category);
+
+      if (isCategorySelected) {
+        // If category is already selected, remove it from selectedCategories
+        return prevSelectedCategories.filter((c) => c !== category);
+      } else {
+        // If category is not selected, add it to selectedCategories
+        return [...prevSelectedCategories, category];
+      }
+    });
+  };
 
   const renderCheckboxItem = useCallback(
     (category) => {
-      const lowercaseCategory = category.toLowerCase();
-      console.log(selectedCategories)
       return (
         <Checkbox.Item
-          key={lowercaseCategory}
-          label={displayName[language][lowercaseCategory]}
+          key={category}
+          label={displayName[language][category]}
           status={
-            selectedCategories.includes(lowercaseCategory)
-              ? "checked"
-              : "unchecked"
+            selectedCategories.includes(category) ? "checked" : "unchecked"
           }
-          onPress={() => handleCategoryChange(lowercaseCategory)}
+          onPress={() => handleCategoryChange(category)}
         />
       );
     },
     [handleCategoryChange, language, selectedCategories]
   );
-
-  useEffect(() => {
-    setSelectedCategories([]);
-  }, [visible]);
 
   return (
     <Modal
@@ -106,10 +100,10 @@ const FilterDialog = ({
           <Text style={styles.title}>
             {displayName[language].selectCategoryTitle}
           </Text>
-          {renderCheckboxItem("breakfast")}
-          {renderCheckboxItem("lunch")}
-          {renderCheckboxItem("dinner")}
-          {renderCheckboxItem("dessert")}
+          {renderCheckboxItem("Breakfast")}
+          {renderCheckboxItem("Lunch")}
+          {renderCheckboxItem("Dinner")}
+          {renderCheckboxItem("Dessert")}
           <View style={styles.buttonContainer}>
             <Button onPress={handleCancelButton}>
               {displayName[language].cancel}
