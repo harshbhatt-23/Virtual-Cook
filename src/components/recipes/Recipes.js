@@ -118,7 +118,6 @@ const RecipesScreen = ({ language, navigation, veg }) => {
   }, [selectedFilterCategories, searchQuery, sortOption, veg]);
 
   const filterRecipes = () => {
-    //let filteredRecipes = recipes;
     let filteredRecipes = [...recipes];
 
     // Apply veg filter

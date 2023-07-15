@@ -43,7 +43,11 @@ const FilterDialog = ({
 
   const handleDoneButton = useCallback(() => {
     const selectedCategoriesForLanguage = selectedCategories.map((category) => {
-      return displayName[language][category];
+      if (language == "en") {
+        return displayName[language][category];
+      } else {
+        return category;
+      }
     });
 
     onSelectCategories(selectedCategoriesForLanguage);
@@ -76,12 +80,14 @@ const FilterDialog = ({
     (category) => {
       return (
         <Checkbox.Item
-          key={category}
+          key={displayName[language][category]}
           label={displayName[language][category]}
           status={
-            selectedCategories.includes(category) ? "checked" : "unchecked"
+            selectedCategories.includes(displayName[language][category])
+              ? "checked"
+              : "unchecked"
           }
-          onPress={() => handleCategoryChange(category)}
+          onPress={() => handleCategoryChange(displayName[language][category])}
         />
       );
     },

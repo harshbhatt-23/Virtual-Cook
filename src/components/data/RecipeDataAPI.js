@@ -102,7 +102,6 @@ export function getRecipesByIngredientName(ingredientName) {
 }
 
 export function getRecipesByCategoryName(categoryName, language) {
-  //console.log(categoryName + "----caliing");
   const nameUpper = categoryName.toUpperCase();
   const recipesArray = [];
   categories.map((data) => {
@@ -116,7 +115,6 @@ export function getRecipesByCategoryName(categoryName, language) {
           categoryName: categoryDisplayName,
         };
         recipesArray.push(recipeWithCategory);
-        //recipesArray.push(item);
       });
     }
   });
@@ -173,7 +171,6 @@ export function searchRecipesByCategoryNRecipeName(
 }
 
 export function getIngredientById(ingredientID, language, measurement) {
-  //console.log(measurement)
   const ingrediantArray = [];
   ingredients.map((data) => {
     if (data.ingredientId == ingredientID) {
