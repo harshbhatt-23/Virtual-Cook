@@ -5,7 +5,7 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     alignItems: "center",
     justifyContent: "flex-start",
-    backgroundColor: "#fff",
+    //backgroundColor: "#fff",
     paddingTop: 50,
   },
   image: {

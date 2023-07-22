@@ -1,5 +1,5 @@
-import { View, Text, Platform, Pressable } from "react-native";
-import { Switch } from "react-native-paper";
+import { View, Platform, Pressable } from "react-native";
+import { Switch, useTheme,Text } from "react-native-paper";
 import { useEffect, useState } from "react";
 import * as Notifications from "expo-notifications";
 import styles from "./styles";
@@ -120,13 +120,16 @@ async function scheduleReminder(language) {
       },
     };
 
-    const existingNotifications = await Notifications.getAllScheduledNotificationsAsync();
+    const existingNotifications =
+      await Notifications.getAllScheduledNotificationsAsync();
     const existingReminder = existingNotifications.find(
       (notification) => notification.content.data.type === "reminder"
     );
 
     if (existingReminder) {
-      await Notifications.cancelScheduledNotificationAsync(existingReminder.identifier);
+      await Notifications.cancelScheduledNotificationAsync(
+        existingReminder.identifier
+      );
     }
 
     const id = await Notifications.scheduleNotificationAsync({
@@ -173,7 +176,8 @@ async function cancelReminder() {
 }
 
 async function getSchedule() {
-  const scheduleNotifications = await Notifications.getAllScheduledNotificationsAsync();
+  const scheduleNotifications =
+    await Notifications.getAllScheduledNotificationsAsync();
   const schedule = [];
   scheduleNotifications.forEach((scheduleNotification) => {
     schedule.push({

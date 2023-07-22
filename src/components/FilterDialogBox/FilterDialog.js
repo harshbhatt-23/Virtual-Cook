@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { View, Text, Modal, StyleSheet } from "react-native";
-import { Checkbox, Button } from "react-native-paper";
+import { View, Modal, StyleSheet } from "react-native";
+import { Checkbox, Button, useTheme, Text } from "react-native-paper";
 import { connect } from "react-redux";
 
 const FilterDialog = ({
@@ -76,6 +76,8 @@ const FilterDialog = ({
     });
   };
 
+  const theme = useTheme();
+
   const renderCheckboxItem = useCallback(
     (category) => {
       return (
@@ -102,14 +104,21 @@ const FilterDialog = ({
       transparent
     >
       <View style={styles.modalContainer}>
-        <View style={styles.dialogContainer}>
+        <View
+          style={[
+            styles.dialogContainer,
+            { backgroundColor: theme.colors.surface },
+          ]}
+        >
           <Text style={styles.title}>
             {displayName[language].selectCategoryTitle}
           </Text>
+
           {renderCheckboxItem("Breakfast")}
           {renderCheckboxItem("Lunch")}
           {renderCheckboxItem("Dinner")}
           {renderCheckboxItem("Dessert")}
+
           <View style={styles.buttonContainer}>
             <Button onPress={handleCancelButton}>
               {displayName[language].cancel}
@@ -132,7 +141,6 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(0, 0, 0, 0.5)",
   },
   dialogContainer: {
-    backgroundColor: "white",
     padding: 16,
     borderRadius: 25,
     width: "80%",

@@ -1,4 +1,5 @@
 import { recipes, categories, ingredients } from "./RecipeData";
+import { colorScheme } from "./GetDynamicColorScheme";
 
 export function getCategoryById(categoryId) {
   let category;
@@ -189,4 +190,14 @@ export function getDirectionById(ingredientID, language) {
     }
   });
   return ingrediantArray;
+}
+
+export function getLightAppColorScheme(appColor) {
+  const colorLightArray = [];
+  colorScheme.map((data) => {
+    if (data.name == appColor) {
+      colorLightArray.push(data);
+    }
+  });
+  return colorLightArray;
 }

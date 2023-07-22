@@ -6,6 +6,8 @@ const initialState = {
   measurement: "us_imperial",
   favoriteRecipes: [],
   veg: false,
+  theme: "light",
+  appColor: "#663399",
 };
 
 // Define reducer function
@@ -37,6 +39,16 @@ const reducer = (state = initialState, action) => {
       return {
         ...state,
         veg: action.payload,
+      };
+    case "SET_THEME":
+      return {
+        ...state,
+        theme: action.payload,
+      };
+    case "SET_APP_COLOR":
+      return {
+        ...state,
+        appColor: action.payload,
       };
 
     default:

@@ -2,34 +2,31 @@ import React, { useState, useEffect } from "react";
 import { View, StyleSheet, Modal } from "react-native";
 import { Button, RadioButton, Text, useTheme } from "react-native-paper";
 import { connect } from "react-redux";
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
-const SortDialog = ({ visible, onDismiss, onSelectSortOption, language }) => {
-  const [checked, setChecked] = useState("asc");
+const ThemeDialog = ({ visible, onDismiss, setTheme, language }) => {
+  const [checked, setChecked] = useState("light");
   const [prevChecked, setPrevChecked] = useState(checked);
 
   const displayName = {
     en: {
-      sortBy: "Sort by Name:",
+      selectTheme: "Select Theme:",
       apply: "Apply",
       cancel: "Cancel",
-      sort: "Sort",
-      AtoZ: "Ascending",
-      ZtoA: "Descending",
+      darkTheme: "Dark Theme",
+      lightTheme: "Light Theme",
     },
     fr: {
-      sortBy: "Trier par nom:",
+      selectTheme: "Sélectionne un thème:",
       apply: "Appliquer",
       cancel: "Annuler",
-      sort: "Trier",
-      AtoZ: "Croissant",
-      ZtoA: "Décroissant",
+      darkTheme: "Thème sombre",
+      lightTheme: "Thème Lumière",
     },
   };
 
   const handleDoneButton = () => {
     setPrevChecked(checked);
-    onSelectSortOption(checked);
+    setTheme(checked);
     onDismiss();
   };
 
@@ -52,46 +49,29 @@ const SortDialog = ({ visible, onDismiss, onSelectSortOption, language }) => {
       transparent
     >
       <View style={styles.modalContainer}>
-        <View
+      <View
           style={[
             styles.dialogContainer,
             { backgroundColor: theme.colors.surface },
           ]}
         >
-          <Text style={styles.title}>{displayName[language].sortBy}</Text>
+        <Text style={styles.title}>{displayName[language].selectTheme}</Text>
           <RadioButton.Group onValueChange={handleRadioChange} value={checked}>
             <View style={styles.radioContainer}>
-              <MaterialCommunityIcons
-                name="sort-alphabetical-ascending"
-                size={24}
-                // color="#000"
-                color={theme.colors.primary}
-                style={styles.radioButtonIcon}
-              />
-
               <View style={styles.radioButtonLabelContainer}>
                 <RadioButton.Item
-                  label={displayName[language].AtoZ}
-                  value="asc"
-                  labelStyle={styles.radioButtonLabel}
+                  label={displayName[language].lightTheme}
+                  value="light"
+                  labelStyle = {styles.radioButtonLabel}
                 />
               </View>
             </View>
-
             <View style={styles.radioContainer}>
-              <MaterialCommunityIcons
-                name="sort-alphabetical-descending"
-                size={24}
-                // color="#000"
-                color={theme.colors.primary}
-                style={styles.radioButtonIcon}
-              />
-
               <View style={styles.radioButtonLabelContainer}>
                 <RadioButton.Item
-                  label={displayName[language].ZtoA}
-                  value="desc"
-                  labelStyle={styles.radioButtonLabel}
+                  label={displayName[language].darkTheme}
+                  value="dark"
+                  labelStyle = {styles.radioButtonLabel}
                 />
               </View>
             </View>
@@ -169,4 +149,4 @@ const mapStateToProps = (state) => ({
   language: state.language,
 });
 
-export default connect(mapStateToProps)(SortDialog);
+export default connect(mapStateToProps)(ThemeDialog);

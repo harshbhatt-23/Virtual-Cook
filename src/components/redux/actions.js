@@ -24,9 +24,20 @@ export const removeFromFavorites = (recipeId) => {
   };
 };
 export const setVeg = (veg) => {
-  console.log("veg ??????", veg);
   return {
     type: "SET_VEG",
     payload: veg,
+  };
+};
+export const setTheme = (theme) => {
+  return {
+    type: "SET_THEME",
+    payload: theme,
+  };
+};
+export const setAppColor = (color) => {
+  return {
+    type: "SET_APP_COLOR",
+    payload: color,
   };
 };

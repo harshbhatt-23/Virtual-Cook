@@ -1,5 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { BottomNavigation, Text } from "react-native-paper";
+import {
+  BottomNavigation,
+  PaperProvider,
+  Text,
+  MD3LightTheme as DefaultTheme,
+  MD3DarkTheme as DarkTheme,
+} from "react-native-paper";
 import HomeScreen from "../homescreen/Home";
 import RecipesScreen from "../recipes/Recipes";
 import SettingsScreen from "../settings/Settings";
@@ -7,7 +13,7 @@ import FavouriteScreen from "../favourite/Favourite";
 import RecipeDetails from "../recipedetails/RecipeDetails";
 import { Provider, connect } from "react-redux";
 import store from "../redux/store";
-import { setLanguage } from "../redux/actions";
+import { setLanguage, setAppColor, setTheme } from "../redux/actions";
 import { createStackNavigator } from "@react-navigation/stack";
 // import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { NavigationContainer } from "@react-navigation/native";
@@ -15,12 +21,21 @@ import { NavigationContainer } from "@react-navigation/native";
 
 import { createMaterialBottomTabNavigator } from "react-native-paper/react-navigation";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
+import { useColorScheme } from "react-native";
+import {
+  getLightAppColorScheme,
+} from "../../components/data/RecipeDataAPI";
 
 const Stack = createStackNavigator();
-//const Tab = createBottomTabNavigator();
 const Tab = createMaterialBottomTabNavigator();
 
-const MainComponent = ({ language, setLanguage }) => {
+const MainComponent = ({
+  language,
+  setLanguage,
+  appColor,
+  setAppColor,
+  theme,
+}) => {
   const [index, setIndex] = React.useState(0);
   const [routes, setRoutes] = React.useState([
     {
@@ -48,6 +63,8 @@ const MainComponent = ({ language, setLanguage }) => {
       unfocusedIcon: "cog-outline",
     },
   ]);
+
+  useEffect(() => {}, [appColor, theme]);
 
   useEffect(() => {
     // Update the titles of the routes when the language changes
@@ -104,17 +121,30 @@ const MainComponent = ({ language, setLanguage }) => {
     );
   };
 
-  // return (
-  //   <Provider store={store}>
-  //     <BottomNavigation
-  //       navigationState={{ index, routes }}
-  //       onIndexChange={setIndex}
-  //       renderScene={renderScene}
-  //     />
-  //   </Provider>
-  // );
+  //color from settings screen - App color
+  const baseColor = appColor;
+  const lightColorScheme = getLightAppColorScheme(baseColor);
+  //console.log(lightColorScheme);
+
+  const lightTheme = {
+    ...DefaultTheme,
+    myOwnProperty: true,
+    colors: lightColorScheme[0].lightColors,
+  };
+
+  const darkTheme = {
+    ...DarkTheme,
+    myOwnProperty: true,
+    colors: lightColorScheme[0].darkColors,
+  };
+
+  const colorScheme = useColorScheme();
+  const isDarkMode = true;
+
+  const themeDisplay = colorScheme === theme ? lightTheme : darkTheme;
+
   return (
-    <Provider store={store}>
+    <PaperProvider theme={themeDisplay}>
       <NavigationContainer>
         <Tab.Navigator
           screenOptions={({ route }) => ({
@@ -164,16 +194,20 @@ const MainComponent = ({ language, setLanguage }) => {
           />
         </Tab.Navigator>
       </NavigationContainer>
-    </Provider>
+    </PaperProvider>
   );
 };
 
 const mapStateToProps = (state) => ({
   language: state.language,
+  appColor: state.appColor,
+  theme: state.theme,
 });
 
 const mapDispatchToProps = {
   setLanguage,
+  setAppColor,
+  setTheme,
 };
 
 const ConnectedMainComponent = connect(

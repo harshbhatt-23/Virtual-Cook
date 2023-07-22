@@ -1,7 +1,13 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, TouchableHighlight, FlatList, Image } from "react-native";
+import { View, TouchableHighlight, FlatList, Image } from "react-native";
 import style from "./styles";
-import { Searchbar, Button, IconButton } from "react-native-paper";
+import {
+  Searchbar,
+  Button,
+  IconButton,
+  useTheme,
+  Text,
+} from "react-native-paper";
 import { recipes } from "../../components/data/RecipeData";
 import { getCategoryName } from "../../components/data/RecipeDataAPI";
 import { connect } from "react-redux";
@@ -12,6 +18,8 @@ import vegImage from "../../../assets/veg-48.png";
 
 //The code for filtering and sorting recipe by name or cataegory
 const RecipesScreen = ({ language, navigation, veg }) => {
+  const theme = useTheme();
+
   const handleRecipePress = (item) => {
     navigation.navigate("RecipeDetails", { item, sourceScreen: "Recipes" });
   };
@@ -88,7 +96,7 @@ const RecipesScreen = ({ language, navigation, veg }) => {
   const renderRecipes = ({ item }) => {
     return (
       <TouchableHighlight
-        underlayColor="rgba(0,0,0,0.2)"
+        underlayColor={theme.colors.surface}
         onPress={() => handleRecipePress(item)}
       >
         <>
@@ -160,7 +168,7 @@ const RecipesScreen = ({ language, navigation, veg }) => {
   };
 
   return (
-    <View>
+    <View style={[{ backgroundColor: theme.colors.background }]}>
       <View style={style.searchConatiner}>
         <Searchbar
           placeholder={menuLabels[language].searchFood}
