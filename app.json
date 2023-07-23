@@ -1,13 +1,13 @@
 {
   "expo": {
-    "name": "Virtual-Cook",
+    "name": "Virtual Cook",
     "slug": "Virtual-Cook",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/VC_Icon.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/VirtualCook_2.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
