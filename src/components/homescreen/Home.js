@@ -28,12 +28,12 @@ const Home = ({ navigation, language }) => {
 
   const menuLabels = {
     en: {
-      helloUser: "Hello, User",
+      helloUser: "Hello",
       descriptionText:"What would you like to cook today?",
       recipeText:"Popular recipes"
     },
     fr: {
-      helloUser: "Bonjour, utilisateur",
+      helloUser: "Bonjour",
       descriptionText:"Qu'aimeriez-vous cuisiner aujourd'hui?",
       recipeText:"Recettes populaires"
     },
