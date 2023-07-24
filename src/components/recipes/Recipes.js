@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, TouchableHighlight, FlatList, Image } from "react-native";
+import { View, TouchableHighlight, FlatList, Image,TouchableOpacity } from "react-native";
 import style from "./styles";
 import {
   Searchbar,
@@ -95,7 +95,7 @@ const RecipesScreen = ({ language, navigation, veg }) => {
 
   const renderRecipes = ({ item }) => {
     return (
-      <TouchableHighlight
+      <TouchableOpacity
         underlayColor={theme.colors.surface}
         onPress={() => handleRecipePress(item)}
       >
@@ -116,7 +116,7 @@ const RecipesScreen = ({ language, navigation, veg }) => {
             </View>
           </View>
         </>
-      </TouchableHighlight>
+      </TouchableOpacity>
     );
   };
 
