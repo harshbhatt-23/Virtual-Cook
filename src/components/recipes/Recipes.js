@@ -1,5 +1,15 @@
 import React, { useState, useEffect } from "react";
-import { View, TouchableHighlight, FlatList, Image,TouchableOpacity } from "react-native";
+import {
+  View,
+  TouchableHighlight,
+  FlatList,
+  Image,
+  ScrollView,
+  TouchableOpacity,
+  Dimensions,
+  SafeAreaView,
+  StatusBar,
+} from "react-native";
 import style from "./styles";
 import {
   Searchbar,
@@ -15,6 +25,7 @@ import FilterDialog from "../FilterDialogBox/FilterDialog";
 import SortDialog from "../SortDialogBox/SortDialog";
 import nonVegImage from "../../../assets/non-veg-48.png";
 import vegImage from "../../../assets/veg-48.png";
+import { useColorScheme } from "react-native";
 
 //The code for filtering and sorting recipe by name or cataegory
 const RecipesScreen = ({ language, navigation, veg }) => {
@@ -93,6 +104,29 @@ const RecipesScreen = ({ language, navigation, veg }) => {
     setSearchQuery(text);
   };
 
+  //Testing
+  const [bottomNavigationHeight, setBottomNavigationHeight] = useState(0);
+
+  useEffect(() => {
+    const onLayout = (event) => {
+      const { height } = event.nativeEvent.layout;
+      setBottomNavigationHeight(height);
+    };
+
+    return () => {
+      // Clean up the listener when the component is unmounted
+      Dimensions.removeEventListener("change", onLayout);
+    };
+  }, []);
+  //Testing above
+
+  //statusbar Testing
+  const getStatusBarHeight = () => {
+    return Platform.OS === "android" ? StatusBar.currentHeight : 0;
+  };
+  const statusBarHeight = getStatusBarHeight();
+  //testing done
+
   const renderRecipes = ({ item }) => {
     return (
       <TouchableOpacity
@@ -167,66 +201,77 @@ const RecipesScreen = ({ language, navigation, veg }) => {
     setFilteredRecipeData(filteredRecipes);
   };
 
+  const isDarkTheme = theme.dark;
+
   return (
-    <View style={[{ backgroundColor: theme.colors.background }]}>
-      <View style={style.searchConatiner}>
-        <Searchbar
-          placeholder={menuLabels[language].searchFood}
-          onChangeText={onChangeSearch}
-          value={searchQuery}
-        />
-      </View>
-
-      <FilterDialog
-        visible={dialogVisible}
-        onDismiss={hideDialog}
-        onSelectCategories={handleSelectCategories}
-        initialSelectedCategories={selectedFilterCategories}
-        language={language}
+    <SafeAreaView style={{ flex: 1, backgroundColor: theme.colors.background }}>
+      <StatusBar
+        barStyle={!isDarkTheme ? "dark-content" : "light-content"}
+        backgroundColor={theme.colors.background}
       />
-
-      <SortDialog
-        visible={sortDialogVisible}
-        onDismiss={hideSortDialog}
-        onSelectSortOption={handleSorting}
-        language={language}
-      />
-
-      <View style={style.buttonMainContainer}>
-        <View style={style.buttonContainer}>
-          <Button icon="filter-outline" mode="contained" onPress={showDialog}>
-            {menuLabels[language].filter}
-          </Button>
+      <View style={[{ backgroundColor: theme.colors.background, flex: 1 }]}>
+        <View style={style.searchConatiner}>
+          <Searchbar
+            placeholder={menuLabels[language].searchFood}
+            onChangeText={onChangeSearch}
+            value={searchQuery}
+          />
         </View>
 
-        <View style={style.buttonContainer}>
-          <Button
-            icon="sort-alphabetical-variant"
-            mode="contained"
-            onPress={showSortDialog}
-          >
-            {menuLabels[language].sort}
-          </Button>
+        <FilterDialog
+          visible={dialogVisible}
+          onDismiss={hideDialog}
+          onSelectCategories={handleSelectCategories}
+          initialSelectedCategories={selectedFilterCategories}
+          language={language}
+        />
+
+        <SortDialog
+          visible={sortDialogVisible}
+          onDismiss={hideSortDialog}
+          onSelectSortOption={handleSorting}
+          language={language}
+        />
+
+        <View style={style.buttonMainContainer}>
+          <View style={style.buttonContainer}>
+            <Button icon="filter-outline" mode="contained" onPress={showDialog}>
+              {menuLabels[language].filter}
+            </Button>
+          </View>
+
+          <View style={style.buttonContainer}>
+            <Button
+              icon="sort-alphabetical-variant"
+              mode="contained"
+              onPress={showSortDialog}
+            >
+              {menuLabels[language].sort}
+            </Button>
+          </View>
+        </View>
+
+        <View style={style.recipeCount}>
+          <Text>
+            {getRecipeCount} {menuLabels[language].recipeFound}
+          </Text>
+        </View>
+
+        <View style={{ flex: 1 }}>
+          <FlatList
+            contentContainerStyle={{
+              paddingBottom: bottomNavigationHeight + 8,
+            }}
+            vertical
+            showsVerticalScrollIndicator={false}
+            numColumns={2}
+            data={filteredRecipeData}
+            renderItem={renderRecipes}
+            keyExtractor={(item) => `${item.recipeId}`}
+          />
         </View>
       </View>
-
-      <View style={style.recipeCount}>
-        <Text>
-          {getRecipeCount} {menuLabels[language].recipeFound}
-        </Text>
-      </View>
-
-      <View style={style.dataBottomMargin}>
-        <FlatList
-          vertical
-          showsVerticalScrollIndicator={false}
-          numColumns={2}
-          data={filteredRecipeData}
-          renderItem={renderRecipes}
-          keyExtractor={(item) => `${item.recipeId}`}
-        />
-      </View>
-    </View>
+    </SafeAreaView>
   );
 };
 

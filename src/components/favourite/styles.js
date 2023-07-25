@@ -6,7 +6,7 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    backgroundColor: "#fff",
+    //  backgroundColor: "#fff",
     padding: 16,
     marginTop: 45,
   },
@@ -49,7 +49,7 @@ const styles = StyleSheet.create({
   },
   textContainer: {
     flex: 8,
-    marginLeft:8
+    marginLeft: 8,
   },
   buttonContainer: {
     flex: 2,

@@ -22,9 +22,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createMaterialBottomTabNavigator } from "react-native-paper/react-navigation";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { useColorScheme } from "react-native";
-import {
-  getLightAppColorScheme,
-} from "../../components/data/RecipeDataAPI";
+import { getLightAppColorScheme } from "../../components/data/RecipeDataAPI";
 
 const Stack = createStackNavigator();
 const Tab = createMaterialBottomTabNavigator();

@@ -1,12 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { View, StyleSheet, Modal } from "react-native";
 import { Button, RadioButton, Text, useTheme } from "react-native-paper";
 import { connect } from "react-redux";
+import { useColorScheme } from "react-native";
+import { setTheme } from "../redux/actions";
 
 const ThemeDialog = ({ visible, onDismiss, setTheme, language }) => {
-  const [checked, setChecked] = useState("light");
-  const [prevChecked, setPrevChecked] = useState(checked);
-
   const displayName = {
     en: {
       selectTheme: "Select Theme:",
@@ -14,6 +13,7 @@ const ThemeDialog = ({ visible, onDismiss, setTheme, language }) => {
       cancel: "Cancel",
       darkTheme: "Dark Theme",
       lightTheme: "Light Theme",
+      systemDefaultTheme: "System Default Theme",
     },
     fr: {
       selectTheme: "Sélectionne un thème:",
@@ -21,8 +21,15 @@ const ThemeDialog = ({ visible, onDismiss, setTheme, language }) => {
       cancel: "Annuler",
       darkTheme: "Thème sombre",
       lightTheme: "Thème Lumière",
+      systemDefaultTheme: "Thème par défaut du système",
     },
   };
+
+  const colorScheme = useColorScheme();
+  const [checked, setChecked] = useState(
+    colorScheme === "dark" ? "dark" : "light"
+  );
+  const [prevChecked, setPrevChecked] = useState(checked);
 
   const handleDoneButton = () => {
     setPrevChecked(checked);
@@ -49,20 +56,20 @@ const ThemeDialog = ({ visible, onDismiss, setTheme, language }) => {
       transparent
     >
       <View style={styles.modalContainer}>
-      <View
+        <View
           style={[
             styles.dialogContainer,
             { backgroundColor: theme.colors.surface },
           ]}
         >
-        <Text style={styles.title}>{displayName[language].selectTheme}</Text>
+          <Text style={styles.title}>{displayName[language].selectTheme}</Text>
           <RadioButton.Group onValueChange={handleRadioChange} value={checked}>
             <View style={styles.radioContainer}>
               <View style={styles.radioButtonLabelContainer}>
                 <RadioButton.Item
                   label={displayName[language].lightTheme}
                   value="light"
-                  labelStyle = {styles.radioButtonLabel}
+                  labelStyle={styles.radioButtonLabel}
                 />
               </View>
             </View>
@@ -71,7 +78,7 @@ const ThemeDialog = ({ visible, onDismiss, setTheme, language }) => {
                 <RadioButton.Item
                   label={displayName[language].darkTheme}
                   value="dark"
-                  labelStyle = {styles.radioButtonLabel}
+                  labelStyle={styles.radioButtonLabel}
                 />
               </View>
             </View>
@@ -127,8 +134,8 @@ const styles = StyleSheet.create({
   radioContainer: {
     flexDirection: "row",
     alignItems: "center",
-    marginLeft: 10,
-    marginRight: 10,
+    //marginLeft: 10,
+    //marginRight: 10,
   },
   radioButtonIcon: {
     marginRight: 8,
@@ -138,7 +145,7 @@ const styles = StyleSheet.create({
   },
   radioButtonLabelContainer: {
     flex: 1,
-    marginLeft: 8, // Adjust the margin as needed
+    //marginLeft: 8, // Adjust the margin as needed
   },
   radioButtonLabel: {
     fontSize: 16,

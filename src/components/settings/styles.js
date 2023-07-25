@@ -2,8 +2,8 @@ import { StyleSheet } from "react-native";
 
 const styles = StyleSheet.create({
   container: {
-    marginVertical: 40,
-    justifyContent: "center",
+    marginTop: Platform.OS === "android" ? 10 : 0,
+    flex: 1,
     padding: 20,
   },
 
@@ -45,9 +45,21 @@ const styles = StyleSheet.create({
       justifyContent: "space-between",
     },
     label: {
-      marginRight: 10,
+      marginTop: 5,
       fontSize: 18,
     },
+  },
+
+  themeButtons: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginTop: 10,
+    gap: 10,
+    title: {
+      fontSize: 23,
+      fontWeight: "bold",
+    },
+    marginBottom: 8,
   },
 });
 
