@@ -38,7 +38,7 @@ App Features:
 7. Multi language support:  
 	 As a user, I can choose the language of the app.  
   
-8. Dark, light and system default:  
+8. Dark and Light Theme:  
 	As a user, I can choose the theme of the app.  
   
 9. Measurement system: 
