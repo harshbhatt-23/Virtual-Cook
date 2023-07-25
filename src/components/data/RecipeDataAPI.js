@@ -201,3 +201,7 @@ export function getLightAppColorScheme(appColor) {
   });
   return colorLightArray;
 }
+
+export function getRecipeById(recipeId) {
+  return recipes[recipeId];
+}

@@ -121,6 +121,28 @@ const MainComponent = ({
     );
   };
 
+  const HomeStack = () => {
+    return (
+      <Stack.Navigator>
+        <Stack.Screen
+          name="Home"
+          component={HomeScreen}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="RecipeDetails"
+          component={RecipeDetails}
+          options={{
+            headerShown: false,
+            tabBarButton: () => null,
+            tabBarLabel: () => null,
+          }}
+          // options={{ headerShown: false }}
+        />
+      </Stack.Navigator>
+    );
+  };
+
   //color from settings screen - App color
   const baseColor = appColor;
   const lightColorScheme = getLightAppColorScheme(baseColor);
@@ -174,7 +196,7 @@ const MainComponent = ({
         >
           <Tab.Screen
             name="home"
-            component={HomeScreen}
+            component={HomeStack}
             options={{ title: routes[0].title }}
           />
           <Tab.Screen
