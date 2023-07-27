@@ -20,7 +20,7 @@ import {
   NavigationContainer,
   useNavigation,
   useIsFocused,
-  CommonActions
+  CommonActions,
 } from "@react-navigation/native";
 //import Icon from "react-native-vector-icons/FontAwesome";
 
@@ -28,6 +28,8 @@ import { createMaterialBottomTabNavigator } from "react-native-paper/react-navig
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { useColorScheme } from "react-native";
 import { getLightAppColorScheme } from "../../components/data/RecipeDataAPI";
+import TestHome from "../homescreen/TestHome";
+import Home from "../homescreen/Home";
 
 const Stack = createStackNavigator();
 const Tab = createMaterialBottomTabNavigator();
@@ -98,7 +100,7 @@ const MainComponent = ({
   const RecipesStack = () => {
     const navigation = useNavigation();
     const isRecipesScreenFocused = useIsFocused();
-  
+
     useEffect(() => {
       // Reset the navigation stack when the component unmounts and the RecipesScreen is not focused
       if (!isRecipesScreenFocused) {
@@ -134,7 +136,7 @@ const MainComponent = ({
   const HomeStack = () => {
     const navigation = useNavigation();
     const isHomeScreenFocused = useIsFocused();
-  
+
     useEffect(() => {
       if (!isHomeScreenFocused) {
         const resetAction = CommonActions.reset({
@@ -149,7 +151,7 @@ const MainComponent = ({
       <Stack.Navigator>
         <Stack.Screen
           name="Home"
-          component={HomeScreen}
+          component={Home}
           options={{ headerShown: false }}
         />
         <Stack.Screen
@@ -190,9 +192,7 @@ const MainComponent = ({
 
   return (
     <PaperProvider theme={themeDisplay}>
-      <NavigationContainer
-        independent={true}
-      >
+      <NavigationContainer independent={true}>
         <Tab.Navigator
           screenOptions={({ route }) => ({
             tabBarIcon: ({ focused, color, size }) => {

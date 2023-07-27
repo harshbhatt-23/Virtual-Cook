@@ -11,12 +11,7 @@ import {
   StatusBar,
 } from "react-native";
 import style from "./styles";
-import {
-  Searchbar,
-  Button,
-  useTheme,
-  Text,
-} from "react-native-paper";
+import { Searchbar, Button, useTheme, Text } from "react-native-paper";
 import { recipes } from "../../components/data/RecipeData";
 import { getCategoryName } from "../../components/data/RecipeDataAPI";
 import { connect } from "react-redux";
@@ -31,6 +26,7 @@ const RecipesScreen = ({ language, navigation, veg }) => {
   const theme = useTheme();
 
   const handleRecipePress = (item) => {
+    // console.log("item object", item);
     navigation.navigate("RecipeDetails", { item, sourceScreen: "Recipes" });
   };
 
