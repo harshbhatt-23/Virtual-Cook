@@ -16,15 +16,18 @@ import store from "../redux/store";
 import { setLanguage, setAppColor, setTheme } from "../redux/actions";
 import { createStackNavigator } from "@react-navigation/stack";
 // import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { NavigationContainer } from "@react-navigation/native";
+import {
+  NavigationContainer,
+  useNavigation,
+  useIsFocused,
+  CommonActions
+} from "@react-navigation/native";
 //import Icon from "react-native-vector-icons/FontAwesome";
 
 import { createMaterialBottomTabNavigator } from "react-native-paper/react-navigation";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { useColorScheme } from "react-native";
-import {
-  getLightAppColorScheme,
-} from "../../components/data/RecipeDataAPI";
+import { getLightAppColorScheme } from "../../components/data/RecipeDataAPI";
 
 const Stack = createStackNavigator();
 const Tab = createMaterialBottomTabNavigator();
@@ -92,14 +95,21 @@ const MainComponent = ({
     }
   };
 
-  const renderScene = BottomNavigation.SceneMap({
-    home: HomeScreen,
-    recipes: RecipesScreen,
-    favourite: FavouriteScreen,
-    settings: SettingsScreen,
-  });
-
   const RecipesStack = () => {
+    const navigation = useNavigation();
+    const isRecipesScreenFocused = useIsFocused();
+  
+    useEffect(() => {
+      // Reset the navigation stack when the component unmounts and the RecipesScreen is not focused
+      if (!isRecipesScreenFocused) {
+        const resetAction = CommonActions.reset({
+          index: 0,
+          routes: [{ name: "Recipes" }],
+        });
+        navigation.dispatch(resetAction);
+      }
+    }, [isRecipesScreenFocused]);
+
     return (
       <Stack.Navigator>
         <Stack.Screen
@@ -122,6 +132,19 @@ const MainComponent = ({
   };
 
   const HomeStack = () => {
+    const navigation = useNavigation();
+    const isHomeScreenFocused = useIsFocused();
+  
+    useEffect(() => {
+      if (!isHomeScreenFocused) {
+        const resetAction = CommonActions.reset({
+          index: 0,
+          routes: [{ name: "Home" }],
+        });
+        navigation.dispatch(resetAction);
+      }
+    }, [isHomeScreenFocused]);
+
     return (
       <Stack.Navigator>
         <Stack.Screen
@@ -167,7 +190,9 @@ const MainComponent = ({
 
   return (
     <PaperProvider theme={themeDisplay}>
-      <NavigationContainer>
+      <NavigationContainer
+        independent={true}
+      >
         <Tab.Navigator
           screenOptions={({ route }) => ({
             tabBarIcon: ({ focused, color, size }) => {
@@ -197,22 +222,30 @@ const MainComponent = ({
           <Tab.Screen
             name="home"
             component={HomeStack}
-            options={{ title: routes[0].title }}
+            options={{
+              title: routes[0].title,
+            }}
           />
           <Tab.Screen
             name="recipes"
             component={RecipesStack}
-            options={{ title: routes[1].title }}
+            options={{
+              title: routes[1].title,
+            }}
           />
           <Tab.Screen
             name="favourite"
             component={FavouriteScreen}
-            options={{ title: routes[2].title }}
+            options={{
+              title: routes[2].title,
+            }}
           />
           <Tab.Screen
             name="settings"
             component={SettingsScreen}
-            options={{ title: routes[3].title }}
+            options={{
+              title: routes[3].title,
+            }}
           />
         </Tab.Navigator>
       </NavigationContainer>
@@ -240,7 +273,9 @@ const ConnectedMainComponent = connect(
 const App = () => {
   return (
     <Provider store={store}>
-      <ConnectedMainComponent />
+      <NavigationContainer>
+        <ConnectedMainComponent />
+      </NavigationContainer>
     </Provider>
   );
 };

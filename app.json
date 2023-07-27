@@ -4,10 +4,10 @@
     "slug": "Virtual-Cook",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/VC_Icon.png",
+    "icon": "./assets/app-icon.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/VirtualCook_2.png",
+      "image": "./assets/vc-transparent.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },

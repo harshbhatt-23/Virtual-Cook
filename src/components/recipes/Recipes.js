@@ -1,10 +1,14 @@
 import React, { useState, useEffect } from "react";
-import { View, TouchableHighlight, FlatList, Image,TouchableOpacity } from "react-native";
+import {
+  View,
+  FlatList,
+  Image,
+  TouchableOpacity,
+} from "react-native";
 import style from "./styles";
 import {
   Searchbar,
   Button,
-  IconButton,
   useTheme,
   Text,
 } from "react-native-paper";

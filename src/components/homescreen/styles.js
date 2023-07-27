@@ -29,6 +29,15 @@ const styles = StyleSheet.create({
         marginVertical: 20,
         alignSelf: 'center',
     },
+    randomRecipeItemContainer: {
+        margin: 10,
+        marginBottom: 20,
+        borderRadius: 10,
+        overflow: 'hidden',
+        alignItems: 'center',
+        borderColor: "#cccccc",
+        borderWidth: 0.5,
+    },
     recipeItemContainer: {
         margin: 10,
         marginBottom: 20,
@@ -37,6 +46,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         borderColor: "#cccccc",
         borderWidth: 0.5,
+        width:200
     },
     recipeImage: {
         width: '100%',
