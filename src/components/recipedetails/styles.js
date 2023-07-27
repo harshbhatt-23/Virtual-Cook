@@ -20,18 +20,18 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: "bold",
     marginVertical: 6,
-    color: "#36454F",
+    //color: "#36454F",
   },
   categoryName: {
     fontSize: 18,
     fontWeight: "bold",
     textAlign: "left",
-    color: "#36454F",
+    // color: "#36454F",
   },
   prepTime: {
     fontSize: 16,
     fontWeight: "bold",
-    color: "#000",
+    //color: "#000",
   },
   fabContainer: {
     flexDirection: "row",
@@ -40,7 +40,7 @@ const styles = StyleSheet.create({
   },
   recipeDescription: {
     fontSize: 16,
-    color: "#000",
+    //color: "#000",
     marginBottom: 16,
     marginLeft: 20,
   },

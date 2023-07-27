@@ -214,7 +214,10 @@ const RecipeDetails = ({
   const theme = useTheme();
 
   return (
-    <ScrollView stickyHeaderIndices={[0]}>
+    <ScrollView
+      stickyHeaderIndices={[0]}
+      style={[{ backgroundColor: theme.colors.background }]}
+    >
       <Appbar.Header mode="center-aligned">
         <Appbar.BackAction
           onPress={() => {
@@ -255,7 +258,7 @@ const RecipeDetails = ({
               <IconButton
                 icon="clipboard-clock"
                 size={24}
-                iconColor={MD3Colors.primary50}
+                iconColor={theme.colors.primary}
               />
             </TouchableOpacity>
             <Text style={styles.prepTime}>{item.preptime}</Text>
@@ -267,7 +270,7 @@ const RecipeDetails = ({
               <IconButton
                 icon="cookie-clock"
                 size={24}
-                iconColor={MD3Colors.primary50}
+                iconColor={theme.colors.primary}
               />
             </TouchableOpacity>
             <Text style={styles.prepTime}>{item.cooktime}</Text>
@@ -303,7 +306,7 @@ const RecipeDetails = ({
             marginRight: 10,
           }}
         >
-          <IconButton icon="file-document" iconColor={MD3Colors.primary50} />
+          <IconButton icon="file-document" iconColor={theme.colors.primary} />
           <Text style={styles.recipeName}>
             {displayWords[language].Ingredients}
           </Text>
@@ -321,7 +324,7 @@ const RecipeDetails = ({
               >
                 <IconButton
                   icon="circle-medium"
-                  iconColor={MD3Colors.neutral10}
+                  iconColor={theme.colors.onSurfaceSecondary}
                 />
                 <Text style={{ fontSize: 16, marginRight: 30 }}>
                   {ingredient}
@@ -340,7 +343,7 @@ const RecipeDetails = ({
             marginRight: 10,
           }}
         >
-          <IconButton icon="bowl-mix" iconColor={MD3Colors.primary50} />
+          <IconButton icon="bowl-mix" iconColor={theme.colors.primary} />
           <Text style={styles.recipeName}>
             {displayWords[language].Directions}
           </Text>
@@ -369,7 +372,7 @@ const RecipeDetails = ({
         >
           <IconButton
             icon="book-open-variant"
-            iconColor={MD3Colors.primary50}
+            iconColor={theme.colors.primary}
           />
           <Text style={styles.recipeName}>
             {displayWords[language].Description}
@@ -406,7 +409,7 @@ const RecipeDetails = ({
             </Button>
 
             <Button
-              mode="text"
+              mode="outlined"
               onPress={() => handleSharePress(displayWords[language])}
               icon="share"
             >

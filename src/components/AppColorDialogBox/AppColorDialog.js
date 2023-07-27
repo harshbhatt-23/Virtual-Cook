@@ -69,6 +69,93 @@ const AppColorDialog = ({ visible, onDismiss, setAppColor, language }) => {
     setColor(color);
   };
 
+  const colorOptions = [
+    {
+      label: displayName[language].color_1,
+      value: "#663399",
+      iconColor: "#663399",
+    },
+    // {
+    //   label: displayName[language].color_2,
+    //   value: "#5d4037",
+    //   iconColor: "#5d4037",
+    // },
+    {
+      label: displayName[language].color_3,
+      value: "#fbc02d",
+      iconColor: "#fbc02d",
+    },
+    {
+      label: displayName[language].color_4,
+      value: "#e64a19",
+      iconColor: "#e64a19",
+    },
+    {
+      label: displayName[language].color_5,
+      value: "#388e3c",
+      iconColor: "#388e3c",
+    },
+    {
+      label: displayName[language].color_6,
+      value: "#0097a7",
+      iconColor: "#0097a7",
+    },
+    // {
+    //   label: displayName[language].color_7,
+    //   value: "#ffa000",
+    //   iconColor: "#ffa000",
+    // },
+    // {
+    //   label: displayName[language].color_8,
+    //   value: "#f57c00",
+    //   iconColor: "#f57c00",
+    // },
+    // {
+    //   label: displayName[language].color_9,
+    //   value: "#c2185b",
+    //   iconColor: "#c2185b",
+    // },
+    {
+      label: displayName[language].color_10,
+      value: "#d32f2f",
+      iconColor: "#d32f2f",
+    },
+    {
+      label: displayName[language].color_11,
+      value: "#512DA8",
+      iconColor: "#512DA8",
+    },
+    {
+      label: displayName[language].color_12,
+      value: "#303F9F",
+      iconColor: "#303F9F",
+    },
+    {
+      label: displayName[language].color_13,
+      value: "#1976D2",
+      iconColor: "#1976D2",
+    },
+  ];
+
+  const renderColorOption = (option) => {
+    return (
+      <View key={option.value} style={styles.radioContainer}>
+        <IconButton
+          icon="brightness-1"
+          size={24}
+          iconColor={option.iconColor}
+        />
+        <View style={styles.radioButtonLabelContainer}>
+          <RadioButton.Item
+            label={option.label}
+            value={option.value}
+            labelStyle={styles.radioButtonLabel}
+          />
+        </View>
+      </View>
+    );
+  };
+
   return (
     <Modal
       visible={visible}
@@ -86,126 +173,8 @@ const AppColorDialog = ({ visible, onDismiss, setAppColor, language }) => {
           <Text style={styles.title}>
             {displayName[language].appColorHeading}
           </Text>
-          <RadioButton.Group onValueChange={handleRadioChange} value={color}>
-            <View style={styles.radioContainer}>
-              <IconButton icon="brightness-1" size={24} iconColor="#663399" />
-              <View style={styles.radioButtonLabelContainer}>
-                <RadioButton.Item
-                  label={displayName[language].color_1}
-                  value="#663399"
-                  labelStyle={styles.radioButtonLabel}
-                />
-              </View>
-            </View>
-            <View style={styles.radioContainer}>
-              <IconButton icon="brightness-1" size={24} iconColor="#5d4037" />
-              <View style={styles.radioButtonLabelContainer}>
-                <RadioButton.Item
-                  label={displayName[language].color_2}
-                  value="#5d4037"
-                  labelStyle={styles.radioButtonLabel}
-                />
-              </View>
-            </View>
-            <View style={styles.radioContainer}>
-              <IconButton icon="brightness-1" size={24} iconColor="#fbc02d" />
-
-              <View style={styles.radioButtonLabelContainer}>
-                <RadioButton.Item
-                  label={displayName[language].color_3}
-                  value="#fbc02d"
-                  labelStyle={styles.radioButtonLabel}
-                />
-              </View>
-            </View>
-            <View style={styles.radioContainer}>
-              <IconButton icon="brightness-1" size={24} iconColor="#388e3c" />
-
-              <View style={styles.radioButtonLabelContainer}>
-                <RadioButton.Item
-                  label={displayName[language].color_5}
-                  value="#388e3c"
-                  labelStyle={styles.radioButtonLabel}
-                />
-              </View>
-            </View>
-            <View style={styles.radioContainer}>
-              <IconButton icon="brightness-1" size={24} iconColor="#0097a7" />
-
-              <View style={styles.radioButtonLabelContainer}>
-                <RadioButton.Item
-                  label={displayName[language].color_6}
-                  value="#0097a7"
-                  labelStyle={styles.radioButtonLabel}
-                />
-              </View>
-            </View>
-            <View style={styles.radioContainer}>
-              <IconButton icon="brightness-1" size={24} iconColor="#f57c00" />
-
-              <View style={styles.radioButtonLabelContainer}>
-                <RadioButton.Item
-                  label={displayName[language].color_8}
-                  value="#f57c00"
-                  labelStyle={styles.radioButtonLabel}
-                />
-              </View>
-            </View>
-            <View style={styles.radioContainer}>
-              <IconButton icon="brightness-1" size={24} iconColor="#c2185b" />
-
-              <View style={styles.radioButtonLabelContainer}>
-                <RadioButton.Item
-                  label={displayName[language].color_9}
-                  value="#c2185b"
-                  labelStyle={styles.radioButtonLabel}
-                />
-              </View>
-            </View>
-            <View style={styles.radioContainer}>
-              <IconButton icon="brightness-1" size={24} iconColor="#d32f2f" />
-
-              <View style={styles.radioButtonLabelContainer}>
-                <RadioButton.Item
-                  label={displayName[language].color_10}
-                  value="#d32f2f"
-                  labelStyle={styles.radioButtonLabel}
-                />
-              </View>
-            </View>
-            <View style={styles.radioContainer}>
-              <IconButton icon="brightness-1" size={24} iconColor="#512DA8" />
-
-              <View style={styles.radioButtonLabelContainer}>
-                <RadioButton.Item
-                  label={displayName[language].color_11}
-                  value="#512DA8"
-                  labelStyle={styles.radioButtonLabel}
-                />
-              </View>
-            </View>
-            <View style={styles.radioContainer}>
-              <IconButton icon="brightness-1" size={24} iconColor="#303F9F" />
-
-              <View style={styles.radioButtonLabelContainer}>
-                <RadioButton.Item
-                  label={displayName[language].color_12}
-                  value="#303F9F"
-                  labelStyle={styles.radioButtonLabel}
-                />
-              </View>
-            </View>
-            <View style={styles.radioContainer}>
-              <IconButton icon="brightness-1" size={24} iconColor="#1976D2" />
-
-              <View style={styles.radioButtonLabelContainer}>
-                <RadioButton.Item
-                  label={displayName[language].color_13}
-                  value="#1976D2"
-                  labelStyle={styles.radioButtonLabel}
-                />
-              </View>
-            </View>
+          <RadioButton.Group onValueChange={setColor} value={color}>
+            {colorOptions.map(renderColorOption)}
           </RadioButton.Group>
 
           <View style={styles.buttonContainer}>

@@ -12,7 +12,8 @@ const styles = StyleSheet.create({
     // justifyContent: 'center'
   },
   searchConatiner: {
-    marginTop: 80,
+    //  marginTop: Platform.OS === "android" ? 50 : 0,
+    marginTop: 20,
     marginLeft: 20,
     marginRight: 20,
   },
@@ -56,7 +57,7 @@ const styles = StyleSheet.create({
     marginVertical: 5,
   },
   dataBottomMargin: {
-    marginBottom: 480,
+    //marginBottom: 480,
   },
   speakTitle: {
     //add style for microphone icon

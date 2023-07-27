@@ -1,7 +1,15 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, FlatList, TouchableOpacity, Image } from "react-native";
+import {
+  View,
+  Text,
+  FlatList,
+  TouchableOpacity,
+  Image,
+  SafeAreaView,
+  StatusBar,
+} from "react-native";
 import { connect } from "react-redux";
-import { Button, IconButton } from "react-native-paper";
+import { Button, IconButton, useTheme } from "react-native-paper";
 import { recipes } from "../../components/data/RecipeData";
 import { getCategoryName } from "../../components/data/RecipeDataAPI";
 import { removeFromFavorites } from "../redux/actions";
@@ -15,6 +23,7 @@ const FavoriteScreen = ({
   removeFromFavorites,
   navigation,
 }) => {
+  const theme = useTheme();
   const [filteredRecipeData, setFilteredRecipeData] = useState([]);
   const [sourceScreen, setSourceScreen] = useState("");
 
@@ -100,18 +109,26 @@ const FavoriteScreen = ({
     </View>
   );
 
+  const isDarkTheme = theme.dark;
+
   return (
-    <View style={styles.container}>
-      {filteredRecipeData.length > 0 ? (
-        <FlatList
-          data={filteredRecipeData}
-          renderItem={renderRecipes}
-          keyExtractor={(item) => item.recipeId.toString()}
-        />
-      ) : (
-        renderEmptyList()
-      )}
-    </View>
+    <SafeAreaView style={{ flex: 1 }}>
+      <StatusBar
+        barStyle={!isDarkTheme ? "dark-content" : "light-content"} // Set the status bar text color to light
+        backgroundColor={theme.colors.surface} // Replace with your desired status bar color
+      />
+      <View style={styles.container}>
+        {filteredRecipeData.length > 0 ? (
+          <FlatList
+            data={filteredRecipeData}
+            renderItem={renderRecipes}
+            keyExtractor={(item) => item.recipeId.toString()}
+          />
+        ) : (
+          renderEmptyList()
+        )}
+      </View>
+    </SafeAreaView>
   );
 };
 

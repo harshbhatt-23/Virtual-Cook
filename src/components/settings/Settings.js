@@ -7,12 +7,19 @@ import {
   setTheme,
   setAppColor,
 } from "../redux/actions";
-import { View, TouchableOpacity, StyleSheet } from "react-native";
-import { Button, Divider, Switch, useTheme,Text } from "react-native-paper";
+import {
+  View,
+  TouchableOpacity,
+  StyleSheet,
+  SafeAreaView,
+  StatusBar,
+} from "react-native";
+import { Button, Divider, Switch, useTheme, Text } from "react-native-paper";
 import style from "./styles";
 import LocalNotification from "../LocalNotification/LocalNotification";
 import ThemeDialog from "../ThemeDialogBox/ThemeDialog";
 import AppColorDialog from "../AppColorDialogBox/AppColorDialog";
+import { useColorScheme } from "react-native";
 
 const SettingsScreen = ({
   language,
@@ -37,6 +44,7 @@ const SettingsScreen = ({
       measurementBody: "Default is US/Imperial",
       diet: "Dietery Restrictions:",
       veg: "Vegetarian only",
+      themeTitle: "Customize your theme",
       changeTheme: "Change theme",
       changeAppColor: "Change app color",
     },
@@ -50,6 +58,7 @@ const SettingsScreen = ({
       measurementBody: "Par défaut, c'est US/Impérial",
       diet: "Restrictions alimentaires:",
       veg: "Végétarien seulement",
+      themeTitle: "Personnalisez votre thème",
       changeTheme: "Change le thème",
       changeAppColor: "Changer la couleur de l'application",
     },
@@ -112,84 +121,93 @@ const SettingsScreen = ({
   };
 
   const currentTheme = useTheme();
+  const isDarkTheme = currentTheme.dark;
+
+  // Step 2: Determine the StatusBar background color based on the theme
+  const statusBarBackgroundColor = isDarkTheme
+    ? currentTheme.colors.background
+    : currentTheme.colors.surface;
 
   return (
-    <View style={[style.container, { backgroundColor: currentTheme.colors.surface }]}>
-      <Text style={style.title}>
-        {settingsLabel[language].changeLanguage}
-      </Text>
-      <View style={style.switch}>
-        <Text style={style.options.label}>
-          {isSwitchOn ? "Changer en français" : "Change to French"}
+    <SafeAreaView style={{ flex: 1 }}>
+      {/* <StatusBar
+        barStyle={!isDarkTheme ? "dark-content" : "light-content"} // Set the status bar text color to light
+        backgroundColor={statusBarBackgroundColor}
+      /> */}
+      <View style={[style.container]}>
+        <Text style={style.title}>
+          {settingsLabel[language].changeLanguage}
         </Text>
-        <Switch value={isSwitchOn} onValueChange={onToggleSwitch} />
-      </View>
-      <Divider />
+        <View style={style.switch}>
+          <Text style={style.options.label}>
+            {isSwitchOn ? "Changer en français" : "Change to French"}
+          </Text>
+          <Switch value={isSwitchOn} onValueChange={onToggleSwitch} />
+        </View>
+        <Divider />
 
-      <LocalNotification />
+        <LocalNotification />
 
-      <Divider />
+        <Divider />
 
-      <Text style={style.title}>
-        {settingsLabel[language].measurements}
-      </Text>
-      <Text style={style.description}>
-        {settingsLabel[language].measurementBody}
-      </Text>
-      <View style={style.switch}>
-        <Text style={style.options.label}>
-          {settingsLabel[language].changeToMetric}
+        <Text style={style.title}>{settingsLabel[language].measurements}</Text>
+        <Text style={style.description}>
+          {settingsLabel[language].measurementBody}
         </Text>
-        <Switch
-          value={isSwitchOnMeasurement}
-          onValueChange={onToggleSwitchMeasurement}
-        />
+        <View style={style.switch}>
+          <Text style={style.options.label}>
+            {settingsLabel[language].changeToMetric}
+          </Text>
+          <Switch
+            value={isSwitchOnMeasurement}
+            onValueChange={onToggleSwitchMeasurement}
+          />
+        </View>
+
+        <Divider />
+
+        <Text style={style.title}>{settingsLabel[language].diet}</Text>
+        <View style={style.switch}>
+          <Text style={style.options.label}>{settingsLabel[language].veg}</Text>
+          <Switch value={isSwitchOnVeg} onValueChange={onToggleSwitchVeg} />
+        </View>
+        <Divider />
+
+        <Text style={style.title}>{settingsLabel[language].themeTitle}</Text>
+        <View style={style.themeButtons}>
+          <Button
+            mode="contained-tonal"
+            icon="theme-light-dark"
+            onPress={showDialog}
+          >
+            {settingsLabel[language].changeTheme}
+          </Button>
+
+          <ThemeDialog
+            visible={themeDialogVisible}
+            onDismiss={hideThemeDialog}
+            setTheme={handleThemeChange}
+            language={language}
+          />
+          <Divider />
+
+          <Button
+            mode="outlined"
+            icon="format-color-fill"
+            onPress={showAppColorDialog}
+          >
+            {settingsLabel[language].changeAppColor}
+          </Button>
+
+          <AppColorDialog
+            visible={appColorDialogVisible}
+            onDismiss={hideAppColorDialog}
+            setAppColor={handleAppColorChange}
+            language={language}
+          />
+        </View>
       </View>
-
-      <Divider />
-
-      <Text style={style.title}>
-        {settingsLabel[language].diet}
-      </Text>
-      <View style={style.switch}>
-        <Text style={style.options.label}>
-          {settingsLabel[language].veg}
-        </Text>
-        <Switch value={isSwitchOnVeg} onValueChange={onToggleSwitchVeg} />
-      </View>
-      <Divider />
-
-      <Button
-        mode="contained-tonal"
-        onPress={showDialog}
-        style={{ margin: 10 }}
-      >
-        {settingsLabel[language].changeTheme}
-      </Button>
-
-      <ThemeDialog
-        visible={themeDialogVisible}
-        onDismiss={hideThemeDialog}
-        setTheme={handleThemeChange}
-        language={language}
-      />
-      <Divider />
-
-      <Button
-        mode="contained-tonal"
-        onPress={showAppColorDialog}
-        style={{ margin: 10 }}
-      >
-        {settingsLabel[language].changeAppColor}
-      </Button>
-
-      <AppColorDialog
-        visible={appColorDialogVisible}
-        onDismiss={hideAppColorDialog}
-        setAppColor={handleAppColorChange}
-        language={language}
-      />
-    </View>
+    </SafeAreaView>
   );
 };
 
