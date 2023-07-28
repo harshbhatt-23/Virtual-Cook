@@ -4,7 +4,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  
+
   horizontalScrollView: {
     flexDirection: "row",
   },
@@ -74,6 +74,12 @@ const styles = StyleSheet.create({
     paddingLeft: 12,
     color: "#777777",
     marginBottom: 10,
+  },
+
+  animationContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
   },
 });
 

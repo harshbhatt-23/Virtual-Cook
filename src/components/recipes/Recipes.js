@@ -94,12 +94,12 @@ const RecipesScreen = ({ language, navigation, veg }) => {
     setSearchQuery(text);
   };
 
-  //statusbar Testing
-  const getStatusBarHeight = () => {
-    return Platform.OS === "android" ? StatusBar.currentHeight : 0;
-  };
-  const statusBarHeight = getStatusBarHeight();
-  //testing done
+  // //statusbar Testing
+  // const getStatusBarHeight = () => {
+  //   return Platform.OS === "android" ? StatusBar.currentHeight : 0;
+  // };
+  // const statusBarHeight = getStatusBarHeight();
+  // //testing done
 
   const renderRecipes = ({ item }) => {
     return (

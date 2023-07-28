@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import {
   View,
   StyleSheet,
@@ -25,6 +25,7 @@ import { ScrollView } from "react-native-gesture-handler";
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { ShakeEventExpo } from "../data/ShakeEventExpo";
+import { debounce } from "lodash";
 
 const Home = ({ navigation, language }) => {
   const [recipeList, setRecipeList] = useState([]);
@@ -33,19 +34,27 @@ const Home = ({ navigation, language }) => {
   const [isHandlingShake, setIsHandlingShake] = useState(false);
   const [isShakeDetected, setIsShakeDetected] = useState(false);
   const [randomRecipeData, setRandomRecipeData] = useState(null);
+  const [shakeSubscription, setShakeSubscription] = useState(null);
+
+  const shakeFlag = useRef(false);
+  const SHAKING_DEBOUNCE_DELAY = 1000; // Adjust the debounce interval as needed (in milliseconds)
 
   useEffect(() => {
     // Check if the random number is already generated and stored in AsyncStorage
     checkRandomNumber();
 
     // Add shake event listener when the component mounts
-    ShakeEventExpo.addListener(handleShake);
+    const shakeSubscription = ShakeEventExpo.addListener(debouncedHandleShake);
+    setShakeSubscription(shakeSubscription);
 
     // Remove the shake event listener when the component unmounts
     return () => {
-      ShakeEventExpo.removeListener(handleShake);
+      //ShakeEventExpo.removeListener(handleShake);
+      if (shakeSubscription) {
+        shakeSubscription.remove();
+      }
     };
-  }, []);
+  }, [debouncedHandleShake]);
 
   useEffect(() => {
     // Check if the random number is already generated and stored in AsyncStorage
@@ -60,12 +69,14 @@ const Home = ({ navigation, language }) => {
       if (storedRandomNumber !== null) {
         // Random number is already generated and stored
         const randomNumber = Number(storedRandomNumber);
+        console.log("Random number already generated:", randomNumber);
 
         // Fetch the recipe data by ID
         try {
           const randomRecipeData = await getRecipeById(randomNumber);
           // Update the state with the fetched recipe data
           setRandomRecipeData(randomRecipeData);
+          console.log("Random recipe data:", randomRecipeData);
         } catch (error) {
           console.log("Error fetching random recipe data:", error);
         }
@@ -80,49 +91,50 @@ const Home = ({ navigation, language }) => {
   };
 
   const handleShake = useCallback(() => {
-    if (isHandlingShake) {
-      // If already handling the shake event, ignore additional shakes
+    if (shakeFlag.current) {
+      // If shake event is already being handled, ignore additional shakes
+      console.log("Already handling shake event");
       return;
     }
 
     // Set the flag to indicate that the shake event is being handled
-    setIsHandlingShake(true);
+    shakeFlag.current = true;
 
     // Shake event handler
     // Vibrate the device for 500 milliseconds
     Vibration.vibrate(500);
 
-    if (!isShakeDetected) {
-      // Call generateRandomNumber function to generate a new random number
-      generateRandomNumber();
-      // Set the flag to indicate that shake has been detected and random number generated
-      setIsShakeDetected(true);
-      // Remove the shake event listener
-      ShakeEventExpo.removeListener(handleShake);
+    console.log("Shake detected");
 
-      // Reset the isShakeDetected flag after 1 second
+    // Call generateRandomNumber function to generate a new random number
+    generateRandomNumber().then(() => {
+      // Reset the flag after the debounce interval
       setTimeout(() => {
-        setIsShakeDetected(false);
-        // Add shake event listener again after the reset interval
-        ShakeEventExpo.addListener(handleShake);
-      }, 500); // You can adjust the delay (in milliseconds) here
-    }
+        shakeFlag.current = false;
+        console.log("Reset shakeFlag");
+      }, SHAKING_DEBOUNCE_DELAY); // Debounce interval (in milliseconds)
+    });
+  }, []);
 
-    // Reset the flag after handling the shake event
-    setIsHandlingShake(false);
-  }, [isHandlingShake, isShakeDetected]);
+  const debouncedHandleShake = useCallback(
+    debounce(handleShake, SHAKING_DEBOUNCE_DELAY),
+    [isHandlingShake] // Add isHandlingShake as a dependency
+  );
 
   const generateRandomNumber = async () => {
-    const newRandomNumber = Math.floor(Math.random() * 18) + 1;
+    const newRandomNumber = Math.floor(Math.random() * 17) + 1;
     // Store the new random number in AsyncStorage
     await AsyncStorage.setItem("randomNumber", newRandomNumber.toString());
     setRandomNumber(newRandomNumber);
 
+    console.log("New random number generated:", newRandomNumber);
     // Fetch the recipe data by ID
     try {
       const randomRecipeData = await getRecipeById(newRandomNumber);
       // Update the state with the fetched recipe data
+
       setRandomRecipeData(randomRecipeData);
+      console.log("Random recipe data from Newly Generated:", randomRecipeData);
     } catch (error) {
       console.log("Error fetching random recipe data:", error);
     }
@@ -212,6 +224,7 @@ const Home = ({ navigation, language }) => {
   const renderRandomRecipeItem = () => {
     // Check if "randomRecipeData" is not null and not empty
     if (randomRecipeData && Object.keys(randomRecipeData).length > 0) {
+      //console.log("Random recipe RENDER:", randomRecipeData);
       return (
         <TouchableOpacity
           style={styles.randomRecipeItemContainer}
