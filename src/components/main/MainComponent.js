@@ -6,7 +6,7 @@ import {
   MD3LightTheme as DefaultTheme,
   MD3DarkTheme as DarkTheme,
 } from "react-native-paper";
-import HomeScreen from "../homescreen/Home";
+import Home from "../homescreen/Home";
 import RecipesScreen from "../recipes/Recipes";
 import SettingsScreen from "../settings/Settings";
 import FavouriteScreen from "../favourite/Favourite";
@@ -15,21 +15,17 @@ import { Provider, connect } from "react-redux";
 import store from "../redux/store";
 import { setLanguage, setAppColor, setTheme } from "../redux/actions";
 import { createStackNavigator } from "@react-navigation/stack";
-// import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import {
   NavigationContainer,
   useNavigation,
   useIsFocused,
   CommonActions,
 } from "@react-navigation/native";
-//import Icon from "react-native-vector-icons/FontAwesome";
-
 import { createMaterialBottomTabNavigator } from "react-native-paper/react-navigation";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { useColorScheme } from "react-native";
 import { getLightAppColorScheme } from "../../components/data/RecipeDataAPI";
-import TestHome from "../homescreen/TestHome";
-import Home from "../homescreen/Home";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const Stack = createStackNavigator();
 const Tab = createMaterialBottomTabNavigator();
@@ -40,6 +36,11 @@ const MainComponent = ({
   appColor,
   setAppColor,
   theme,
+  setTheme,
+  measurement, // Make sure to include all the required props here
+  setMeasurement,
+  veg,
+  setVeg,
 }) => {
   const [index, setIndex] = React.useState(0);
   const [routes, setRoutes] = React.useState([
@@ -102,7 +103,6 @@ const MainComponent = ({
     const isRecipesScreenFocused = useIsFocused();
 
     useEffect(() => {
-      // Reset the navigation stack when the component unmounts and the RecipesScreen is not focused
       if (!isRecipesScreenFocused) {
         const resetAction = CommonActions.reset({
           index: 0,
@@ -171,7 +171,6 @@ const MainComponent = ({
   //color from settings screen - App color
   const baseColor = appColor;
   const lightColorScheme = getLightAppColorScheme(baseColor);
-  //console.log(lightColorScheme);
 
   const lightTheme = {
     ...DefaultTheme,
@@ -189,6 +188,25 @@ const MainComponent = ({
   const isDarkMode = true;
 
   const themeDisplay = colorScheme === theme ? lightTheme : darkTheme;
+
+  //async code for local storage..
+  useEffect(() => {
+    const loadThemeFromStorage = async () => {
+      try {
+        const storedTheme = await AsyncStorage.getItem("selectedTheme");
+        if (storedTheme !== null) {
+          setTheme(JSON.parse(storedTheme));
+        } else {
+          setTheme("light");
+          await AsyncStorage.setItem("selectedTheme", "light");
+        }
+      } catch (error) {
+        // Error retrieving data from AsyncStorage
+      }
+    };
+
+    loadThemeFromStorage();
+  }, []);
 
   return (
     <PaperProvider theme={themeDisplay}>

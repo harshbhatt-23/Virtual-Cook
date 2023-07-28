@@ -1,9 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { View, StyleSheet, Modal } from "react-native";
 import { Button, RadioButton, Text, useTheme } from "react-native-paper";
 import { connect } from "react-redux";
 import { useColorScheme } from "react-native";
-import { setTheme } from "../redux/actions";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const ThemeDialog = ({ visible, onDismiss, setTheme, language }) => {
   const displayName = {
@@ -31,10 +31,15 @@ const ThemeDialog = ({ visible, onDismiss, setTheme, language }) => {
   );
   const [prevChecked, setPrevChecked] = useState(checked);
 
-  const handleDoneButton = () => {
+  const handleDoneButton = async () => {
     setPrevChecked(checked);
     setTheme(checked);
     onDismiss();
+    try {
+      await AsyncStorage.setItem("selectedTheme", JSON.stringify(checked));
+    } catch (error) {
+      // Error saving data to AsyncStorage
+    }
   };
 
   const handleCancelButton = () => {
@@ -47,6 +52,23 @@ const ThemeDialog = ({ visible, onDismiss, setTheme, language }) => {
   };
 
   const theme = useTheme();
+
+  //Async theme store check..
+  useEffect(() => {
+    const loadThemeFromStorage = async () => {
+      try {
+        const storedTheme = await AsyncStorage.getItem("selectedTheme");
+        if (storedTheme !== null) {
+          setChecked(JSON.parse(storedTheme));
+          setPrevChecked(JSON.parse(storedTheme));
+        }
+      } catch (error) {
+        // Error retrieving data from AsyncStorage
+      }
+    };
+
+    loadThemeFromStorage();
+  }, []);
 
   return (
     <Modal
@@ -129,13 +151,11 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     marginRight: 10,
     flexDirection: "row",
-    justifyContent: "flex-end", // Align buttons to the end
+    justifyContent: "flex-end",
   },
   radioContainer: {
     flexDirection: "row",
     alignItems: "center",
-    //marginLeft: 10,
-    //marginRight: 10,
   },
   radioButtonIcon: {
     marginRight: 8,
@@ -145,7 +165,6 @@ const styles = StyleSheet.create({
   },
   radioButtonLabelContainer: {
     flex: 1,
-    //marginLeft: 8, // Adjust the margin as needed
   },
   radioButtonLabel: {
     fontSize: 16,

@@ -89,7 +89,6 @@ const Home = ({ navigation, language }) => {
     setIsHandlingShake(true);
 
     // Shake event handler
-    console.log("Shake Shake Shake");
     // Vibrate the device for 500 milliseconds
     Vibration.vibrate(500);
 

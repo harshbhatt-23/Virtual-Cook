@@ -26,7 +26,6 @@ const RecipesScreen = ({ language, navigation, veg }) => {
   const theme = useTheme();
 
   const handleRecipePress = (item) => {
-    // console.log("item object", item);
     navigation.navigate("RecipeDetails", { item, sourceScreen: "Recipes" });
   };
 
@@ -90,30 +89,10 @@ const RecipesScreen = ({ language, navigation, veg }) => {
     setSortOption(sort);
   };
 
-  const handleCancelButton = () => {
-    setSortDialogVisible(false);
-  };
-
   //Search box value
   const onChangeSearch = (text) => {
     setSearchQuery(text);
   };
-
-  //Testing
-  const [bottomNavigationHeight, setBottomNavigationHeight] = useState(0);
-
-  useEffect(() => {
-    const onLayout = (event) => {
-      const { height } = event.nativeEvent.layout;
-      setBottomNavigationHeight(height);
-    };
-
-    return () => {
-      // Clean up the listener when the component is unmounted
-      Dimensions.removeEventListener("change", onLayout);
-    };
-  }, []);
-  //Testing above
 
   //statusbar Testing
   const getStatusBarHeight = () => {
@@ -255,7 +234,7 @@ const RecipesScreen = ({ language, navigation, veg }) => {
         <View style={{ flex: 1 }}>
           <FlatList
             contentContainerStyle={{
-              paddingBottom: bottomNavigationHeight + 8,
+              paddingBottom: 25,
             }}
             vertical
             showsVerticalScrollIndicator={false}

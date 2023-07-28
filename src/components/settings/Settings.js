@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import {
   setLanguage,
@@ -19,7 +19,6 @@ import style from "./styles";
 import LocalNotification from "../LocalNotification/LocalNotification";
 import ThemeDialog from "../ThemeDialogBox/ThemeDialog";
 import AppColorDialog from "../AppColorDialogBox/AppColorDialog";
-import { useColorScheme } from "react-native";
 
 const SettingsScreen = ({
   language,
@@ -45,8 +44,8 @@ const SettingsScreen = ({
       diet: "Dietery Restrictions:",
       veg: "Vegetarian only",
       themeTitle: "Customize your theme",
-      changeTheme: "Change theme",
-      changeAppColor: "Change app color",
+      changeTheme: "Theme",
+      changeAppColor: "App Color",
     },
     fr: {
       changeLanguage: "Changer de langue:",
@@ -59,8 +58,8 @@ const SettingsScreen = ({
       diet: "Restrictions alimentaires:",
       veg: "Végétarien seulement",
       themeTitle: "Personnalisez votre thème",
-      changeTheme: "Change le thème",
-      changeAppColor: "Changer la couleur de l'application",
+      changeTheme: "Thème",
+      changeAppColor: "Couleur de l'Application",
     },
   };
 
@@ -130,10 +129,6 @@ const SettingsScreen = ({
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
-      {/* <StatusBar
-        barStyle={!isDarkTheme ? "dark-content" : "light-content"} // Set the status bar text color to light
-        backgroundColor={statusBarBackgroundColor}
-      /> */}
       <View style={[style.container]}>
         <Text style={style.title}>
           {settingsLabel[language].changeLanguage}
@@ -175,14 +170,15 @@ const SettingsScreen = ({
 
         <Text style={style.title}>{settingsLabel[language].themeTitle}</Text>
         <View style={style.themeButtons}>
-          <Button
-            mode="contained-tonal"
-            icon="theme-light-dark"
-            onPress={showDialog}
-          >
-            {settingsLabel[language].changeTheme}
-          </Button>
-
+          <View style={{ flex: 1 }}>
+            <Button
+              mode="contained-tonal"
+              icon="theme-light-dark"
+              onPress={showDialog}
+            >
+              {settingsLabel[language].changeTheme}
+            </Button>
+          </View>
           <ThemeDialog
             visible={themeDialogVisible}
             onDismiss={hideThemeDialog}
@@ -191,14 +187,15 @@ const SettingsScreen = ({
           />
           <Divider />
 
-          <Button
-            mode="outlined"
-            icon="format-color-fill"
-            onPress={showAppColorDialog}
-          >
-            {settingsLabel[language].changeAppColor}
-          </Button>
-
+          <View style={{ flex: 1 }}>
+            <Button
+              mode="outlined"
+              icon="format-color-fill"
+              onPress={showAppColorDialog}
+            >
+              {settingsLabel[language].changeAppColor}
+            </Button>
+          </View>
           <AppColorDialog
             visible={appColorDialogVisible}
             onDismiss={hideAppColorDialog}
