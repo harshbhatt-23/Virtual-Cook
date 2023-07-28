@@ -152,7 +152,7 @@ const MainComponent = ({
       <Stack.Navigator>
         <Stack.Screen
           name="Home"
-          component={TestHome}
+          component={Home}
           options={{ headerShown: false }}
         />
         <Stack.Screen

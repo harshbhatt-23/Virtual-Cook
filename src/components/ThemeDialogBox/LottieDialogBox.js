@@ -18,39 +18,14 @@ const LottieDialog = ({ isVisible, onClose, language }) => {
   };
 
   const theme = useTheme();
-  const [isDialogVisible, setIsDialogVisible] = useState(isVisible);
-
-  useEffect(() => {
-    // Handle the visibility change from props
-    setIsDialogVisible(isVisible);
-  }, [isVisible]);
 
   // Function to handle the dialog close event
   const handleClose = () => {
-    setIsDialogVisible(false); // Set the dialog visibility to false
     onClose(); // Call the onClose function provided by the parent to handle the close event
   };
 
-  const animationRef = useRef(null);
-  const [showAnimation, setShowAnimation] = useState(false);
-  const [animationProgress, setAnimationProgress] = useState(
-    new Animated.Value(0)
-  );
-
-  const startAnimation = () => {
-    if (animationRef.current) {
-      animationRef.current.play();
-    }
-  };
-
-  const stopAnimation = () => {
-    if (animationRef.current) {
-      animationRef.current.reset();
-    }
-  };
-
   return (
-    <Modal isVisible={isDialogVisible} animationType="fade" transparent>
+    <Modal isVisible={isVisible} animationType="fade" transparent>
       <View style={styles.modalContainer}>
         <View
           style={[
@@ -60,11 +35,9 @@ const LottieDialog = ({ isVisible, onClose, language }) => {
         >
           <Text style={styles.title}>{displayName[language].dialogTitle}</Text>
           <LottieView
-            ref={animationRef}
             source={require("../../../assets/lottie_shake.json")}
-            progress={animationProgress}
-            loop={false}
-            onAnimationFinish={() => setShowAnimation(false)}
+            autoPlay
+            loop
             style={{ height: 250, width: 250 }}
           />
 
