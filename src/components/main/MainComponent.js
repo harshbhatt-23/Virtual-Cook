@@ -26,7 +26,6 @@ import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { useColorScheme } from "react-native";
 import { getLightAppColorScheme } from "../../components/data/RecipeDataAPI";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import TestHome from "../homescreen/TestHome";
 
 const Stack = createStackNavigator();
 const Tab = createMaterialBottomTabNavigator();

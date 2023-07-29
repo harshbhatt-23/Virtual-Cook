@@ -26,6 +26,7 @@ import { ScrollView } from "react-native-gesture-handler";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { ShakeEventExpo } from "../data/ShakeEventExpo";
 import { debounce } from "lodash";
+import LottieDialogBox from "../ThemeDialogBox/LottieDialogBox";
 
 const Home = ({ navigation, language }) => {
   const [recipeList, setRecipeList] = useState([]);
@@ -36,20 +37,46 @@ const Home = ({ navigation, language }) => {
   const [randomRecipeData, setRandomRecipeData] = useState(null);
   const [shakeSubscription, setShakeSubscription] = useState(null);
 
+  //code for shake dialog
+  const [shakeDialogVisible, setShakeDialogVisible] = useState(false);
+  const showShakeDialog = () => {
+    setShakeDialogVisible(true);
+  };
+
+  // Function to handle the closing of LottieDialogBox
+  const handleCloseDialog = () => {
+    setShakeDialogVisible(false);
+  };
+
+  useEffect(() => {
+    checkFirstTimeUser();
+  }, []);
+
+  const checkFirstTimeUser = async () => {
+    try {
+      const value = await AsyncStorage.getItem("FirstTime");
+
+      if (value === null) {
+        showShakeDialog();
+        await AsyncStorage.setItem("FirstTime", "true");
+      } else {
+        showShakeDialog();
+      }
+    } catch (error) {
+      console.log("Error checking first time user:", error);
+    }
+  };
+
   const shakeFlag = useRef(false);
   const SHAKING_DEBOUNCE_DELAY = 1000; // Adjust the debounce interval as needed (in milliseconds)
 
   useEffect(() => {
-    // Check if the random number is already generated and stored in AsyncStorage
     checkRandomNumber();
 
-    // Add shake event listener when the component mounts
     const shakeSubscription = ShakeEventExpo.addListener(debouncedHandleShake);
     setShakeSubscription(shakeSubscription);
 
-    // Remove the shake event listener when the component unmounts
     return () => {
-      //ShakeEventExpo.removeListener(handleShake);
       if (shakeSubscription) {
         shakeSubscription.remove();
       }
@@ -57,32 +84,23 @@ const Home = ({ navigation, language }) => {
   }, [debouncedHandleShake]);
 
   useEffect(() => {
-    // Check if the random number is already generated and stored in AsyncStorage
     checkRandomNumber();
   }, []);
 
   const checkRandomNumber = async () => {
     try {
-      // Check if the random number exists in AsyncStorage
       const storedRandomNumber = await AsyncStorage.getItem("randomNumber");
 
       if (storedRandomNumber !== null) {
-        // Random number is already generated and stored
         const randomNumber = Number(storedRandomNumber);
-        console.log("Random number already generated:", randomNumber);
-
-        // Fetch the recipe data by ID
+        
         try {
           const randomRecipeData = await getRecipeById(randomNumber);
-          // Update the state with the fetched recipe data
           setRandomRecipeData(randomRecipeData);
-          console.log("Random recipe data:", randomRecipeData);
         } catch (error) {
           console.log("Error fetching random recipe data:", error);
         }
       } else {
-        // Random number doesn't exist in AsyncStorage
-        // Generate a new random number between 1 and 18
         generateRandomNumber();
       }
     } catch (error) {
@@ -92,49 +110,32 @@ const Home = ({ navigation, language }) => {
 
   const handleShake = useCallback(() => {
     if (shakeFlag.current) {
-      // If shake event is already being handled, ignore additional shakes
-      console.log("Already handling shake event");
       return;
     }
 
-    // Set the flag to indicate that the shake event is being handled
     shakeFlag.current = true;
-
-    // Shake event handler
-    // Vibrate the device for 500 milliseconds
     Vibration.vibrate(500);
 
-    console.log("Shake detected");
-
-    // Call generateRandomNumber function to generate a new random number
     generateRandomNumber().then(() => {
-      // Reset the flag after the debounce interval
       setTimeout(() => {
         shakeFlag.current = false;
-        console.log("Reset shakeFlag");
-      }, SHAKING_DEBOUNCE_DELAY); // Debounce interval (in milliseconds)
+      }, SHAKING_DEBOUNCE_DELAY);
     });
   }, []);
 
   const debouncedHandleShake = useCallback(
     debounce(handleShake, SHAKING_DEBOUNCE_DELAY),
-    [isHandlingShake] // Add isHandlingShake as a dependency
+    [isHandlingShake]
   );
 
   const generateRandomNumber = async () => {
     const newRandomNumber = Math.floor(Math.random() * 17) + 1;
-    // Store the new random number in AsyncStorage
+
     await AsyncStorage.setItem("randomNumber", newRandomNumber.toString());
     setRandomNumber(newRandomNumber);
-
-    console.log("New random number generated:", newRandomNumber);
-    // Fetch the recipe data by ID
     try {
       const randomRecipeData = await getRecipeById(newRandomNumber);
-      // Update the state with the fetched recipe data
-
       setRandomRecipeData(randomRecipeData);
-      console.log("Random recipe data from Newly Generated:", randomRecipeData);
     } catch (error) {
       console.log("Error fetching random recipe data:", error);
     }
@@ -222,9 +223,7 @@ const Home = ({ navigation, language }) => {
   };
 
   const renderRandomRecipeItem = () => {
-    // Check if "randomRecipeData" is not null and not empty
     if (randomRecipeData && Object.keys(randomRecipeData).length > 0) {
-      //console.log("Random recipe RENDER:", randomRecipeData);
       return (
         <TouchableOpacity
           style={styles.randomRecipeItemContainer}
@@ -240,7 +239,6 @@ const Home = ({ navigation, language }) => {
         </TouchableOpacity>
       );
     } else {
-      // You can show a loading indicator or some message while waiting for data to be fetched
       return (
         <View style={styles.loadingContainer}>
           <ActivityIndicator size="large" color={theme.colors.primary} />
@@ -274,6 +272,12 @@ const Home = ({ navigation, language }) => {
       <Divider style={{ marginHorizontal: 10 }} />
 
       <ScrollView>
+        <LottieDialogBox
+          isShakeVisible={shakeDialogVisible}
+          onClose={handleCloseDialog}
+          language={language}
+        />
+
         {randomRecipeTitle()}
         {renderRandomRecipeItem()}
 

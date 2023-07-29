@@ -2,10 +2,9 @@ import React, { useState, useEffect, useRef } from "react";
 import { View, StyleSheet, Modal, Animated } from "react-native";
 import { Button, Text, useTheme } from "react-native-paper";
 import { connect } from "react-redux";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import LottieView from "lottie-react-native";
 
-const LottieDialog = ({ isVisible, onClose, language }) => {
+const LottieDialog = ({ isShakeVisible, onClose, language }) => {
   const displayName = {
     en: {
       dialogTitle: "Shake to get a random recipe",
@@ -19,34 +18,42 @@ const LottieDialog = ({ isVisible, onClose, language }) => {
 
   const theme = useTheme();
 
-  // Function to handle the dialog close event
   const handleClose = () => {
-    onClose(); // Call the onClose function provided by the parent to handle the close event
+    onClose();
   };
 
   return (
-    <Modal isVisible={isVisible} animationType="fade" transparent>
-      <View style={styles.modalContainer}>
-        <View
-          style={[
-            styles.dialogContainer,
-            { backgroundColor: theme.colors.surface },
-          ]}
-        >
-          <Text style={styles.title}>{displayName[language].dialogTitle}</Text>
-          <LottieView
-            source={require("../../../assets/lottie_shake.json")}
-            autoPlay
-            loop
-            style={{ height: 250, width: 250 }}
-          />
+    isShakeVisible && (
+      <Modal
+        transparent
+        visible={isShakeVisible}
+        onRequestClose={onClose}
+        animationType="fade"
+      >
+        <View style={styles.modalContainer}>
+          <View
+            style={[
+              styles.dialogContainer,
+              { backgroundColor: theme.colors.surface },
+            ]}
+          >
+            <Text style={styles.title}>
+              {displayName[language].dialogTitle}
+            </Text>
+            <LottieView
+              source={require("../../../assets/lottie_shake.json")}
+              autoPlay
+              loop
+              style={{ height: 250, width: 250 }}
+            />
 
-          <View style={styles.buttonContainer}>
-            <Button onPress={handleClose}>{displayName[language].ok}</Button>
+            <View style={styles.buttonContainer}>
+              <Button onPress={handleClose}>{displayName[language].ok}</Button>
+            </View>
           </View>
         </View>
-      </View>
-    </Modal>
+      </Modal>
+    )
   );
 };
 
@@ -62,6 +69,7 @@ const styles = StyleSheet.create({
     padding: 16,
     borderRadius: 25,
     width: "80%",
+    alignItems: "center",
   },
   title: {
     fontSize: 18,
