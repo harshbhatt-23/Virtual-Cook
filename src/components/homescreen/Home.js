@@ -27,6 +27,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { ShakeEventExpo } from "../data/ShakeEventExpo";
 import { debounce } from "lodash";
 import LottieDialogBox from "../ThemeDialogBox/LottieDialogBox";
+import { useIsFocused } from "@react-navigation/native";
 
 const Home = ({ navigation, language }) => {
   const [recipeList, setRecipeList] = useState([]);
@@ -38,15 +39,24 @@ const Home = ({ navigation, language }) => {
   const [shakeSubscription, setShakeSubscription] = useState(null);
 
   //code for shake dialog
+  const [isHomeTabClicked, setIsHomeTabClicked] = useState(false);
+  const isFocused = useIsFocused();
   const [shakeDialogVisible, setShakeDialogVisible] = useState(false);
+  const [hasLottieDialogShown, setHasLottieDialogShown] = useState(false);
+
   const showShakeDialog = () => {
     setShakeDialogVisible(true);
+    setHasLottieDialogShown(true);
   };
 
-  // Function to handle the closing of LottieDialogBox
-  const handleCloseDialog = () => {
-    setShakeDialogVisible(false);
-  };
+  // useEffect to handle Home tab click
+  // useEffect(() => {
+  //   if (isFocused && !hasLottieDialogShown) {
+  //     setIsHomeTabClicked(true);
+  //     setShakeDialogVisible(true);
+  //     setHasLottieDialogShown(true);
+  //   }
+  // }, [isFocused, hasLottieDialogShown]);
 
   useEffect(() => {
     checkFirstTimeUser();
@@ -54,21 +64,27 @@ const Home = ({ navigation, language }) => {
 
   const checkFirstTimeUser = async () => {
     try {
-      const value = await AsyncStorage.getItem("FirstTime");
+      const value = await AsyncStorage.getItem("FirstTime13");
 
       if (value === null) {
         showShakeDialog();
-        await AsyncStorage.setItem("FirstTime", "true");
-      } else {
-        showShakeDialog();
+        await AsyncStorage.setItem("FirstTime13", "true");
+      }
+      else{
+        console.log("haha buttt....");
       }
     } catch (error) {
       console.log("Error checking first time user:", error);
     }
   };
 
+  // Function to handle the closing of LottieDialogBox
+  const handleCloseDialog = () => {
+    setShakeDialogVisible(false);
+  };
+
   const shakeFlag = useRef(false);
-  const SHAKING_DEBOUNCE_DELAY = 1000; // Adjust the debounce interval as needed (in milliseconds)
+  const SHAKING_DEBOUNCE_DELAY = 1000;
 
   useEffect(() => {
     checkRandomNumber();
@@ -93,7 +109,7 @@ const Home = ({ navigation, language }) => {
 
       if (storedRandomNumber !== null) {
         const randomNumber = Number(storedRandomNumber);
-        
+
         try {
           const randomRecipeData = await getRecipeById(randomNumber);
           setRandomRecipeData(randomRecipeData);
@@ -272,11 +288,13 @@ const Home = ({ navigation, language }) => {
       <Divider style={{ marginHorizontal: 10 }} />
 
       <ScrollView>
-        <LottieDialogBox
-          isShakeVisible={shakeDialogVisible}
-          onClose={handleCloseDialog}
-          language={language}
-        />
+        {/* {isHomeTabClicked && ( */}
+          <LottieDialogBox
+            isShakeVisible={shakeDialogVisible}
+            onClose={handleCloseDialog}
+            language={language}
+          />
+        {/* )} */}
 
         {randomRecipeTitle()}
         {renderRandomRecipeItem()}

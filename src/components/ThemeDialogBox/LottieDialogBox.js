@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { View, StyleSheet, Modal, Animated } from "react-native";
 import { Button, Text, useTheme } from "react-native-paper";
 import { connect } from "react-redux";
@@ -40,15 +40,20 @@ const LottieDialog = ({ isShakeVisible, onClose, language }) => {
             <Text style={styles.title}>
               {displayName[language].dialogTitle}
             </Text>
-            <LottieView
-              source={require("../../../assets/lottie_shake.json")}
-              autoPlay
-              loop
-              style={{ height: 250, width: 250 }}
-            />
+            <Animated.View style={styles.lottieContainer}>
+              {/* Wrap LottieView with Animated.View */}
+              <LottieView
+                source={require("../../../assets/lottie_shake.json")}
+                autoPlay
+                loop
+                style={{ height: 250, width: 250 }}
+              />
+            </Animated.View>
 
             <View style={styles.buttonContainer}>
-              <Button onPress={handleClose}>{displayName[language].ok}</Button>
+              <Button onPress={handleClose} labelStyle={{ fontSize: 18 }}>
+                {displayName[language].ok}
+              </Button>
             </View>
           </View>
         </View>

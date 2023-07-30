@@ -32,15 +32,9 @@ const Tab = createMaterialBottomTabNavigator();
 
 const MainComponent = ({
   language,
-  setLanguage,
   appColor,
-  setAppColor,
   theme,
   setTheme,
-  measurement, // Make sure to include all the required props here
-  setMeasurement,
-  veg,
-  setVeg,
 }) => {
   const [index, setIndex] = React.useState(0);
   const [routes, setRoutes] = React.useState([
@@ -70,7 +64,8 @@ const MainComponent = ({
     },
   ]);
 
-  useEffect(() => {}, [appColor, theme]);
+  useEffect(() => {
+  }, [appColor, theme]);
 
   useEffect(() => {
     // Update the titles of the routes when the language changes
