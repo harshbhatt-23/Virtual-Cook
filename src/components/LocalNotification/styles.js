@@ -2,7 +2,7 @@ import { StyleSheet } from "react-native";
 
 export default StyleSheet.create({
   container: {
-    marginVertical:8
+    marginVertical: 8,
   },
   title: {
     fontSize: 23,
@@ -18,15 +18,25 @@ export default StyleSheet.create({
     container: {
       alignItems: "center",
       flexDirection: "row",
-      marginTop: 10,
       justifyContent: "space-between",
     },
     label: {
+      marginTop: 10,
       marginRight: 10,
       fontSize: 18,
     },
   },
-
+  switch: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginTop: 10,
+    gap: 10,
+    title: {
+      fontSize: 23,
+      fontWeight: "bold",
+    },
+    marginBottom: 8,
+  },
   logs: {
     container: {
       marginTop: 30,

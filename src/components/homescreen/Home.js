@@ -64,14 +64,11 @@ const Home = ({ navigation, language }) => {
 
   const checkFirstTimeUser = async () => {
     try {
-      const value = await AsyncStorage.getItem("FirstTime13");
+      const value = await AsyncStorage.getItem("firstTimeUser");
 
       if (value === null) {
         showShakeDialog();
-        await AsyncStorage.setItem("FirstTime13", "true");
-      }
-      else{
-        console.log("haha buttt....");
+        await AsyncStorage.setItem("firstTimeUser", "true");
       }
     } catch (error) {
       console.log("Error checking first time user:", error);
@@ -289,11 +286,11 @@ const Home = ({ navigation, language }) => {
 
       <ScrollView>
         {/* {isHomeTabClicked && ( */}
-          <LottieDialogBox
-            isShakeVisible={shakeDialogVisible}
-            onClose={handleCloseDialog}
-            language={language}
-          />
+        <LottieDialogBox
+          isShakeVisible={shakeDialogVisible}
+          onClose={handleCloseDialog}
+          language={language}
+        />
         {/* )} */}
 
         {randomRecipeTitle()}
