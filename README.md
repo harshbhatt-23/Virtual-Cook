@@ -42,7 +42,7 @@ App Features:
 
 9. Measurement system:
    User can select from metric or US system or metric + US.
-
+  
 10. Dietary Restrictions:  
     As a use, I can select no dietary restrictions or vegetarian only.
 
