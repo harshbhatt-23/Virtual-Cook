@@ -1,5 +1,5 @@
-import { View, Text, Platform, Pressable } from "react-native";
-import { Switch } from "react-native-paper";
+import { View, Platform, Pressable } from "react-native";
+import { Switch, useTheme, Text } from "react-native-paper";
 import { useEffect, useState } from "react";
 import * as Notifications from "expo-notifications";
 import styles from "./styles";
@@ -16,25 +16,22 @@ const LocalNotification = ({ language, setLanguage }) => {
       const newSchedule = await scheduleReminder(language);
       if (newSchedule) {
         setReminder(true);
-        setSchedule(await getSchedule());
       }
     } else {
+      setReminder(false);
       const cancelled = await cancelReminder();
-      if (cancelled) {
-        setReminder(false);
-        setSchedule(await getSchedule());
-      }
     }
   };
 
   useEffect(() => {
-    async () => {
+    const fetchPreviousSchedule = async () => {
       const previouslySchedule = await getSchedule();
       setSchedule(previouslySchedule);
       if (previouslySchedule.find((item) => item.type === "reminder")) {
         setReminder(true);
       }
     };
+    fetchPreviousSchedule();
   }, []);
 
   useEffect(() => {
@@ -44,7 +41,23 @@ const LocalNotification = ({ language, setLanguage }) => {
   useEffect(() => {
     // Update notification when language changes
     updateNotificationContent();
-  }, [language]);
+  }, [language, reminder]); // Add 'reminder' to the dependency array
+
+  useEffect(() => {
+    // Set the notification handler for foreground notifications
+    const notificationHandler = async (notification) => {
+      const { request } = notification;
+      // Here you can handle the notification while the app is in the foreground
+      console.log("Received notification while app is in foreground:", request);
+    };
+
+    // Set the notification handler
+    const subscription =
+      Notifications.addNotificationReceivedListener(notificationHandler);
+
+    // Cleanup the subscription when the component unmounts
+    return () => subscription.remove();
+  }, []);
 
   const updateNotificationContent = async () => {
     if (reminder) {
@@ -52,6 +65,31 @@ const LocalNotification = ({ language, setLanguage }) => {
       await scheduleReminder(language);
     }
   };
+
+  const handleForegroundNotification = async (notification) => {
+    const { request } = notification;
+    // Display the notification using Notifications
+    await Notifications.setNotificationHandler({
+      handleNotification: async () => ({
+        shouldShowAlert: true,
+        shouldPlaySound: false,
+        shouldSetBadge: false,
+      }),
+    });
+  };
+
+  useEffect(() => {
+    // Set the notification handler for foreground notifications
+    const foregroundSubscription =
+      Notifications.addNotificationReceivedListener(
+        handleForegroundNotification
+      );
+
+    // Cleanup the subscriptions when the component unmounts
+    return () => {
+      foregroundSubscription.remove();
+    };
+  }, []);
 
   const localNotificationLabel = {
     en: {
@@ -76,12 +114,12 @@ const LocalNotification = ({ language, setLanguage }) => {
       </Text>
 
       {/* Options */}
-      <View style={styles.options.container}>
-        <Pressable>
-          <Text style={styles.options.label}>
-            {localNotificationLabel[language].allowNotification}
-          </Text>
-        </Pressable>
+      <View style={styles.switch}>
+        {/* <Pressable> */}
+        <Text style={styles.options.label}>
+          {localNotificationLabel[language].allowNotification}
+        </Text>
+        {/* </Pressable> */}
         <Switch
           value={reminder}
           onValueChange={(value) => handleReminderPress(value)}
@@ -120,13 +158,16 @@ async function scheduleReminder(language) {
       },
     };
 
-    const existingNotifications = await Notifications.getAllScheduledNotificationsAsync();
+    const existingNotifications =
+      await Notifications.getAllScheduledNotificationsAsync();
     const existingReminder = existingNotifications.find(
       (notification) => notification.content.data.type === "reminder"
     );
 
     if (existingReminder) {
-      await Notifications.cancelScheduledNotificationAsync(existingReminder.identifier);
+      await Notifications.cancelScheduledNotificationAsync(
+        existingReminder.identifier
+      );
     }
 
     const id = await Notifications.scheduleNotificationAsync({
@@ -141,9 +182,8 @@ async function scheduleReminder(language) {
         },
       },
       trigger: {
-        hour: 12, // 7 PM (change the desired hour here)
-        minute: 15,
-        repeats: true, // repeat every day
+        seconds: 3,
+        repeats: false,
       },
     });
 
@@ -173,7 +213,8 @@ async function cancelReminder() {
 }
 
 async function getSchedule() {
-  const scheduleNotifications = await Notifications.getAllScheduledNotificationsAsync();
+  const scheduleNotifications =
+    await Notifications.getAllScheduledNotificationsAsync();
   const schedule = [];
   scheduleNotifications.forEach((scheduleNotification) => {
     schedule.push({

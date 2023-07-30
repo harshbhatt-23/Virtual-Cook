@@ -12,7 +12,8 @@ const styles = StyleSheet.create({
     // justifyContent: 'center'
   },
   searchConatiner: {
-    marginTop: 80,
+    //  marginTop: Platform.OS === "android" ? 50 : 0,
+    marginTop: 20,
     marginLeft: 20,
     marginRight: 20,
   },
@@ -56,7 +57,7 @@ const styles = StyleSheet.create({
     marginVertical: 5,
   },
   dataBottomMargin: {
-    marginBottom: 480,
+    //marginBottom: 480,
   },
   speakTitle: {
     //add style for microphone icon
@@ -70,10 +71,10 @@ const styles = StyleSheet.create({
     marginTop: 8,
   },
   buttonText: {
-    color: '#FFFFFF',
+    color: "#FFFFFF",
     fontSize: 16,
-    fontWeight: 'bold',
-    textAlign: 'center',
+    fontWeight: "bold",
+    textAlign: "center",
   },
   modal: {
     flex: 1,
@@ -81,16 +82,28 @@ const styles = StyleSheet.create({
   },
   modalContainer: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     //backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   buttonContainer: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    width: '80%'
-  }
+    justifyContent: "center",
+    alignItems: "center",
+    width: "80%",
+  },
+  dietImage: {
+    width: 20,
+    height: 20,
+    marginLeft: 5,
+    marginTop: 5,
+    marginBottom: 5,
+  },
+  typeWithIcon: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
 });
 
 export default styles;

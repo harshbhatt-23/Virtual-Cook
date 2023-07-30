@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from "react";
 import {
   View,
-  Text,
   TouchableOpacity,
   Image,
-  SafeAreaView,
   ScrollView,
   BackHandler,
+  Share,
 } from "react-native";
 import { connect } from "react-redux";
 import { useNavigation, useIsFocused } from "@react-navigation/native";
@@ -22,15 +21,26 @@ import {
   MD3Colors,
   Snackbar,
   Divider,
+  Button,
+  useTheme,
+  Text,
 } from "react-native-paper";
 import styles from "./styles";
-import HorizontalLine from "../HorizontalLine/HorizontalLine";
-import { HeaderBackButton } from "@react-navigation/stack";
 import * as Speech from "expo-speech";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
+import { addToFavorites, removeFromFavorites } from "../redux/actions";
+import nonVegImage from "../../../assets/non-veg-48.png";
+import vegImage from "../../../assets/veg-48.png";
 
-const RecipeDetails = ({ route, language, measurement }) => {
-  const [showSnackbar, setShowSnackbar] = React.useState(false);
+const RecipeDetails = ({
+  route,
+  language,
+  measurement,
+  addToFavorites,
+  removeFromFavorites,
+  favoriteRecipes,
+}) => {
+  const [showSnackbar, setShowSnackbar] = useState(false);
   const [isClicked, setIsClicked] = useState(false);
   const [isFirstIcon, setIsFirstIcon] = useState(false);
 
@@ -41,7 +51,9 @@ const RecipeDetails = ({ route, language, measurement }) => {
   const handleBackPress = () => {
     Speech.stop();
     // Navigate back to RecipesScreen
-    navigation.goBack();
+    const sourceScreen = route.params.sourceScreen;
+    navigation.navigate(sourceScreen);
+    return true;
   };
 
   const displayWords = {
@@ -51,6 +63,10 @@ const RecipeDetails = ({ route, language, measurement }) => {
       Ingredients: "Ingredients",
       Directions: "Directions",
       Description: "Description",
+      addToFavoritesButton: "Add to favorite",
+      shareButton: "Share",
+      shareTitle: "Check out this recipe",
+      title: "Title",
     },
     fr: {
       PrepTime: "Temps de préparation",
@@ -58,6 +74,10 @@ const RecipeDetails = ({ route, language, measurement }) => {
       Ingredients: "Ingrédients",
       Directions: "Directions",
       Description: "Description",
+      addToFavoritesButton: "Ajouter aux Favoris",
+      shareButton: "Partager",
+      shareTitle: "Vérifiez cette recette",
+      title: "Titre",
     },
   };
 
@@ -117,7 +137,7 @@ const RecipeDetails = ({ route, language, measurement }) => {
     }
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     const handleBackPress = () => {
       stopTextToSpeech();
       return false;
@@ -148,8 +168,56 @@ const RecipeDetails = ({ route, language, measurement }) => {
     setShowSnackbar(false);
   };
 
+  const handleFavoritePress = (id) => {
+    if (isRecipeFavorite(id)) {
+      removeFromFavorites(id);
+    } else {
+      addToFavorites(id);
+    }
+  };
+
+  const handleSharePress = async (id) => {
+    try {
+      // const result = await Share.share({
+      //     message: `Check out this recipe: \n\nTitle: ${item.title[language]} \n\nIngredients:\n${ingredients.map(
+      //         (ingredient, index) => ` ${index + 1}. ${ingredient} \n`
+      //     )} \nDirections:\n${directions.map(
+      //         (direction, index) => ` ${index + 1}. ${direction} \n`
+      //     )} \n\nDescription: ${item.description[language]} \n\nPrep Time: ${item.preptime} \n\nCook Time: ${item.cooktime}`
+      // });
+
+      const result = await Share.share({
+        message: `${displayWords[language].shareTitle}: \n\n${
+          displayWords[language].title
+        }: ${item.title[language]} \n\n${
+          displayWords[language].Ingredients
+        }:\n${ingredients
+          .map((ingredient, index) => `${index + 1}. ${ingredient}`)
+          .join("\n")} \n\n${displayWords[language].Directions}:\n${directions
+          .map((direction, index) => `${index + 1}. ${direction}`)
+          .join("\n")} \n\n${displayWords[language].Description}: ${
+          item.description[language]
+        } \n\n${displayWords[language].PrepTime}: ${item.preptime} \n\n${
+          displayWords[language].CookTime
+        }: ${item.cooktime}`,
+      });
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
+
+  const isRecipeFavorite = (id) => {
+    const isFavorite = favoriteRecipes.some((recipe) => recipe === id);
+    return isFavorite;
+  };
+
+  const theme = useTheme();
+
   return (
-    <ScrollView stickyHeaderIndices={[0]}>
+    <ScrollView
+      stickyHeaderIndices={[0]}
+      style={[{ backgroundColor: theme.colors.background }]}
+    >
       <Appbar.Header mode="center-aligned">
         <Appbar.BackAction
           onPress={() => {
@@ -158,13 +226,22 @@ const RecipeDetails = ({ route, language, measurement }) => {
         />
         <Appbar.Content title={item.title[language]} />
       </Appbar.Header>
-      <Image style={styles.image} source={{ uri: item.photo_url }} />
+      <View style={styles.imageContainer}>
+        <Image style={styles.image} source={{ uri: item.photo_url }} />
+      </View>
 
       {/* Breakfast */}
       <View style={styles.content}>
-        <Text style={styles.categoryName}>
-          {getCategoryName(item.categoryId, language)}
-        </Text>
+        <View style={styles.typeWithIcon}>
+          <Text style={styles.categoryName}>
+            {getCategoryName(item.categoryId, language)}
+          </Text>
+          <Image
+            source={item.isVeg ? vegImage : nonVegImage}
+            // style={[styles.dietImage, { backgroundColor: theme.colors.surface }]}
+            style={styles.dietImage}
+          />
+        </View>
 
         <View
           style={{
@@ -181,7 +258,7 @@ const RecipeDetails = ({ route, language, measurement }) => {
               <IconButton
                 icon="clipboard-clock"
                 size={24}
-                iconColor={MD3Colors.primary50}
+                iconColor={theme.colors.primary}
               />
             </TouchableOpacity>
             <Text style={styles.prepTime}>{item.preptime}</Text>
@@ -193,7 +270,7 @@ const RecipeDetails = ({ route, language, measurement }) => {
               <IconButton
                 icon="cookie-clock"
                 size={24}
-                iconColor={MD3Colors.primary50}
+                iconColor={theme.colors.primary}
               />
             </TouchableOpacity>
             <Text style={styles.prepTime}>{item.cooktime}</Text>
@@ -215,7 +292,7 @@ const RecipeDetails = ({ route, language, measurement }) => {
             }}
           >
             {isFirstIcon
-              ? "Preperation Time: " + item.preptime
+              ? "Preparation Time: " + item.preptime
               : "Cooking Time: " + item.cooktime}
           </Snackbar>
         </View>
@@ -229,7 +306,7 @@ const RecipeDetails = ({ route, language, measurement }) => {
             marginRight: 10,
           }}
         >
-          <IconButton icon="file-document" iconColor={MD3Colors.primary50} />
+          <IconButton icon="file-document" iconColor={theme.colors.primary} />
           <Text style={styles.recipeName}>
             {displayWords[language].Ingredients}
           </Text>
@@ -247,7 +324,7 @@ const RecipeDetails = ({ route, language, measurement }) => {
               >
                 <IconButton
                   icon="circle-medium"
-                  iconColor={MD3Colors.neutral10}
+                  iconColor={theme.colors.onSurfaceSecondary}
                 />
                 <Text style={{ fontSize: 16, marginRight: 30 }}>
                   {ingredient}
@@ -266,7 +343,7 @@ const RecipeDetails = ({ route, language, measurement }) => {
             marginRight: 10,
           }}
         >
-          <IconButton icon="bowl-mix" iconColor={MD3Colors.primary50} />
+          <IconButton icon="bowl-mix" iconColor={theme.colors.primary} />
           <Text style={styles.recipeName}>
             {displayWords[language].Directions}
           </Text>
@@ -295,7 +372,7 @@ const RecipeDetails = ({ route, language, measurement }) => {
         >
           <IconButton
             icon="book-open-variant"
-            iconColor={MD3Colors.primary50}
+            iconColor={theme.colors.primary}
           />
           <Text style={styles.recipeName}>
             {displayWords[language].Description}
@@ -307,17 +384,54 @@ const RecipeDetails = ({ route, language, measurement }) => {
         </Text>
 
         <Divider />
+
+        <TouchableOpacity>
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "space-between",
+              margin: 10,
+            }}
+          >
+            <Button
+              mode="contained-tonal"
+              onPress={() => handleFavoritePress(item.recipeId)}
+              icon={({}) =>
+                isRecipeFavorite(item.recipeId) ? (
+                  <Icon name="cards-heart" color="#D2042D" size={24} />
+                ) : (
+                  <Icon name="cards-heart-outline" color="black" size={24} />
+                )
+              }
+            >
+              {displayWords[language].addToFavoritesButton}
+            </Button>
+
+            <Button
+              mode="outlined"
+              onPress={() => handleSharePress(displayWords[language])}
+              icon="share"
+            >
+              {displayWords[language].shareButton}
+            </Button>
+          </View>
+        </TouchableOpacity>
       </View>
     </ScrollView>
     // </SafeAreaView>
   );
 };
 
-const iconPress = () => {};
-
 const mapStateToProps = (state) => ({
   language: state.language,
   measurement: state.measurement,
+  favoriteRecipes: state.favoriteRecipes,
 });
 
-export default connect(mapStateToProps)(RecipeDetails);
+const mapDispatchToProps = {
+  addToFavorites,
+  removeFromFavorites,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(RecipeDetails);

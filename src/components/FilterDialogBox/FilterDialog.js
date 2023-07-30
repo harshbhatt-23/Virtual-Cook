@@ -1,58 +1,100 @@
-import React, { useState } from "react";
-import { View, Text, Modal, StyleSheet } from "react-native";
-import { Checkbox, Button } from "react-native-paper";
+import React, { useState, useEffect, useCallback } from "react";
+import { View, Modal, StyleSheet } from "react-native";
+import { Checkbox, Button, useTheme, Text } from "react-native-paper";
 import { connect } from "react-redux";
 
-const FilterDialog = ({ visible, onDismiss, onSelectCategories, language }) => {
-  const [breakfastChecked, setBreakfastChecked] = useState(false);
-  const [lunchChecked, setLunchChecked] = useState(false);
-  const [dinnerChecked, setDinnerChecked] = useState(false);
-  const [dessertChecked, setDessertChecked] = useState(false);
-
+const FilterDialog = ({
+  visible,
+  onDismiss,
+  onSelectCategories,
+  initialSelectedCategories = [],
+  language,
+}) => {
   const displayName = {
     en: {
-      breakfast: "Breakfast",
-      lunch: "Lunch",
-      dinner: "Dinner",
-      dessert: "Dessert",
-      selectCategoryTitle: "Select Categorie(s):",
+      Breakfast: "Breakfast",
+      Lunch: "Lunch",
+      Dinner: "Dinner",
+      Dessert: "Dessert",
+      selectCategoryTitle: "Select Category(s):",
       apply: "Apply",
       cancel: "Cancel",
     },
     fr: {
-      breakfast: "Petit-déjeuner",
-      lunch: "Déjeunere",
-      dinner: "Dîner",
-      dessert: "Dessert",
-      selectCategoryTitle: "Sélectionnez la ou les catégories:",
+      Breakfast: "Petit-déjeuner",
+      Lunch: "Déjeunere",
+      Dinner: "Dîner",
+      Dessert: "Dessert",
+      selectCategoryTitle: "Sélectionnez la ou les catégories :",
       apply: "Appliquer",
       cancel: "Annuler",
     },
   };
 
-  const handleDoneButton = () => {
-    const selectedCategories = [];
-    if (breakfastChecked) {
-      selectedCategories.push(displayName[language].breakfast);
-    }
-    if (lunchChecked) {
-      selectedCategories.push(displayName[language].lunch);
-    }
-    if (dinnerChecked) {
-      selectedCategories.push(displayName[language].dinner);
-    }
-    if (dessertChecked) {
-      selectedCategories.push(displayName[language].dessert);
-    }
+  const [selectedCategories, setSelectedCategories] = useState([]);
 
-    onSelectCategories(selectedCategories);
-    console.log("Selectred Categories" + selectedCategories);
+  useEffect(() => {
+    if (visible) {
+      setSelectedCategories(initialSelectedCategories); // Initialize selectedCategories with initialSelectedCategories
+    } else {
+      setSelectedCategories([]); // Reset selectedCategories when dialog is dismissed
+    }
+  }, [visible, initialSelectedCategories]);
+
+  const handleDoneButton = useCallback(() => {
+    const selectedCategoriesForLanguage = selectedCategories.map((category) => {
+      if (language == "en") {
+        return displayName[language][category];
+      } else {
+        return category;
+      }
+    });
+
+    onSelectCategories(selectedCategoriesForLanguage);
     onDismiss();
-  };
+  }, [onDismiss, onSelectCategories, selectedCategories, language]);
 
   const handleCancelButton = () => {
+    setSelectedCategories((prevSelectedCategories) => {
+      // Restore previously selected categories
+      return [...prevSelectedCategories];
+    });
     onDismiss();
   };
+
+  const handleCategoryChange = (category) => {
+    setSelectedCategories((prevSelectedCategories) => {
+      const isCategorySelected = prevSelectedCategories.includes(category);
+
+      if (isCategorySelected) {
+        // If category is already selected, remove it from selectedCategories
+        return prevSelectedCategories.filter((c) => c !== category);
+      } else {
+        // If category is not selected, add it to selectedCategories
+        return [...prevSelectedCategories, category];
+      }
+    });
+  };
+
+  const theme = useTheme();
+
+  const renderCheckboxItem = useCallback(
+    (category) => {
+      return (
+        <Checkbox.Item
+          key={displayName[language][category]}
+          label={displayName[language][category]}
+          status={
+            selectedCategories.includes(displayName[language][category])
+              ? "checked"
+              : "unchecked"
+          }
+          onPress={() => handleCategoryChange(displayName[language][category])}
+        />
+      );
+    },
+    [handleCategoryChange, language, selectedCategories]
+  );
 
   return (
     <Modal
@@ -62,30 +104,20 @@ const FilterDialog = ({ visible, onDismiss, onSelectCategories, language }) => {
       transparent
     >
       <View style={styles.modalContainer}>
-        <View style={styles.dialogContainer}>
+        <View
+          style={[
+            styles.dialogContainer,
+            { backgroundColor: theme.colors.surface },
+          ]}
+        >
           <Text style={styles.title}>
             {displayName[language].selectCategoryTitle}
           </Text>
-          <Checkbox.Item
-            label={displayName[language].breakfast}
-            status={breakfastChecked ? "checked" : "unchecked"}
-            onPress={() => setBreakfastChecked(!breakfastChecked)}
-          />
-          <Checkbox.Item
-            label={displayName[language].lunch}
-            status={lunchChecked ? "checked" : "unchecked"}
-            onPress={() => setLunchChecked(!lunchChecked)}
-          />
-          <Checkbox.Item
-            label={displayName[language].dinner}
-            status={dinnerChecked ? "checked" : "unchecked"}
-            onPress={() => setDinnerChecked(!dinnerChecked)}
-          />
-          <Checkbox.Item
-            label={displayName[language].dessert}
-            status={dessertChecked ? "checked" : "unchecked"}
-            onPress={() => setDessertChecked(!dessertChecked)}
-          />
+
+          {renderCheckboxItem("Breakfast")}
+          {renderCheckboxItem("Lunch")}
+          {renderCheckboxItem("Dinner")}
+          {renderCheckboxItem("Dessert")}
 
           <View style={styles.buttonContainer}>
             <Button onPress={handleCancelButton}>
@@ -109,7 +141,6 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(0, 0, 0, 0.5)",
   },
   dialogContainer: {
-    backgroundColor: "white",
     padding: 16,
     borderRadius: 25,
     width: "80%",
@@ -122,18 +153,10 @@ const styles = StyleSheet.create({
     marginBottom: 8,
     marginTop: 8,
   },
-  content: {
-    marginBottom: 16,
-  },
-  actionsContainer: {
+  buttonContainer: {
+    marginTop: 16,
     flexDirection: "row",
     justifyContent: "flex-end",
-  },
-  buttonContainer: {
-    marginLeft: 10,
-    marginRight: 10,
-    flexDirection: "row",
-    justifyContent: "flex-end", // Align buttons to the end
   },
 });
 

@@ -1,13 +1,13 @@
 {
   "expo": {
-    "name": "Virtual-Cook",
+    "name": "Virtual Cook",
     "slug": "Virtual-Cook",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/app-icon.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/vc-transparent.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -19,12 +19,18 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/app-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.harsh_bhatt23.VirtualCook"
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "a2407f20-7090-44cd-9959-97024a9e723b"
+      }
     }
   }
 }

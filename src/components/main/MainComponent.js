@@ -1,26 +1,41 @@
 import React, { useState, useEffect } from "react";
-import { BottomNavigation, Text } from "react-native-paper";
-import HomeScreen from "../homescreen/Home";
+import {
+  BottomNavigation,
+  PaperProvider,
+  Text,
+  MD3LightTheme as DefaultTheme,
+  MD3DarkTheme as DarkTheme,
+} from "react-native-paper";
+import Home from "../homescreen/Home";
 import RecipesScreen from "../recipes/Recipes";
 import SettingsScreen from "../settings/Settings";
 import FavouriteScreen from "../favourite/Favourite";
 import RecipeDetails from "../recipedetails/RecipeDetails";
 import { Provider, connect } from "react-redux";
 import store from "../redux/store";
-import { setLanguage } from "../redux/actions";
+import { setLanguage, setAppColor, setTheme } from "../redux/actions";
 import { createStackNavigator } from "@react-navigation/stack";
-// import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { NavigationContainer } from "@react-navigation/native";
-//import Icon from "react-native-vector-icons/FontAwesome";
-
+import {
+  NavigationContainer,
+  useNavigation,
+  useIsFocused,
+  CommonActions,
+} from "@react-navigation/native";
 import { createMaterialBottomTabNavigator } from "react-native-paper/react-navigation";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
+import { useColorScheme } from "react-native";
+import { getLightAppColorScheme } from "../../components/data/RecipeDataAPI";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const Stack = createStackNavigator();
-//const Tab = createBottomTabNavigator();
 const Tab = createMaterialBottomTabNavigator();
 
-const MainComponent = ({ language, setLanguage }) => {
+const MainComponent = ({
+  language,
+  appColor,
+  theme,
+  setTheme,
+}) => {
   const [index, setIndex] = React.useState(0);
   const [routes, setRoutes] = React.useState([
     {
@@ -50,6 +65,9 @@ const MainComponent = ({ language, setLanguage }) => {
   ]);
 
   useEffect(() => {
+  }, [appColor, theme]);
+
+  useEffect(() => {
     // Update the titles of the routes when the language changes
     setRoutes((prevRoutes) =>
       prevRoutes.map((route) => ({
@@ -75,14 +93,20 @@ const MainComponent = ({ language, setLanguage }) => {
     }
   };
 
-  const renderScene = BottomNavigation.SceneMap({
-    home: HomeScreen,
-    recipes: RecipesScreen,
-    favourite: FavouriteScreen,
-    settings: SettingsScreen,
-  });
-
   const RecipesStack = () => {
+    const navigation = useNavigation();
+    const isRecipesScreenFocused = useIsFocused();
+
+    useEffect(() => {
+      if (!isRecipesScreenFocused) {
+        const resetAction = CommonActions.reset({
+          index: 0,
+          routes: [{ name: "Recipes" }],
+        });
+        navigation.dispatch(resetAction);
+      }
+    }, [isRecipesScreenFocused]);
+
     return (
       <Stack.Navigator>
         <Stack.Screen
@@ -104,18 +128,84 @@ const MainComponent = ({ language, setLanguage }) => {
     );
   };
 
-  // return (
-  //   <Provider store={store}>
-  //     <BottomNavigation
-  //       navigationState={{ index, routes }}
-  //       onIndexChange={setIndex}
-  //       renderScene={renderScene}
-  //     />
-  //   </Provider>
-  // );
+  const HomeStack = () => {
+    const navigation = useNavigation();
+    const isHomeScreenFocused = useIsFocused();
+
+    useEffect(() => {
+      if (!isHomeScreenFocused) {
+        const resetAction = CommonActions.reset({
+          index: 0,
+          routes: [{ name: "Home" }],
+        });
+        navigation.dispatch(resetAction);
+      }
+    }, [isHomeScreenFocused]);
+
+    return (
+      <Stack.Navigator>
+        <Stack.Screen
+          name="Home"
+          component={Home}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="RecipeDetails"
+          component={RecipeDetails}
+          options={{
+            headerShown: false,
+            tabBarButton: () => null,
+            tabBarLabel: () => null,
+          }}
+          // options={{ headerShown: false }}
+        />
+      </Stack.Navigator>
+    );
+  };
+
+  //color from settings screen - App color
+  const baseColor = appColor;
+  const lightColorScheme = getLightAppColorScheme(baseColor);
+
+  const lightTheme = {
+    ...DefaultTheme,
+    myOwnProperty: true,
+    colors: lightColorScheme[0].lightColors,
+  };
+
+  const darkTheme = {
+    ...DarkTheme,
+    myOwnProperty: true,
+    colors: lightColorScheme[0].darkColors,
+  };
+
+  const colorScheme = useColorScheme();
+  const isDarkMode = true;
+
+  const themeDisplay = colorScheme === theme ? lightTheme : darkTheme;
+
+  //async code for local storage..
+  useEffect(() => {
+    const loadThemeFromStorage = async () => {
+      try {
+        const storedTheme = await AsyncStorage.getItem("selectedTheme");
+        if (storedTheme !== null) {
+          setTheme(JSON.parse(storedTheme));
+        } else {
+          setTheme("light");
+          await AsyncStorage.setItem("selectedTheme", "light");
+        }
+      } catch (error) {
+        // Error retrieving data from AsyncStorage
+      }
+    };
+
+    loadThemeFromStorage();
+  }, []);
+
   return (
-    <Provider store={store}>
-      <NavigationContainer>
+    <PaperProvider theme={themeDisplay}>
+      <NavigationContainer independent={true}>
         <Tab.Navigator
           screenOptions={({ route }) => ({
             tabBarIcon: ({ focused, color, size }) => {
@@ -144,36 +234,48 @@ const MainComponent = ({ language, setLanguage }) => {
         >
           <Tab.Screen
             name="home"
-            component={HomeScreen}
-            options={{ title: routes[0].title }}
+            component={HomeStack}
+            options={{
+              title: routes[0].title,
+            }}
           />
           <Tab.Screen
             name="recipes"
             component={RecipesStack}
-            options={{ title: routes[1].title }}
+            options={{
+              title: routes[1].title,
+            }}
           />
           <Tab.Screen
             name="favourite"
             component={FavouriteScreen}
-            options={{ title: routes[2].title }}
+            options={{
+              title: routes[2].title,
+            }}
           />
           <Tab.Screen
             name="settings"
             component={SettingsScreen}
-            options={{ title: routes[3].title }}
+            options={{
+              title: routes[3].title,
+            }}
           />
         </Tab.Navigator>
       </NavigationContainer>
-    </Provider>
+    </PaperProvider>
   );
 };
 
 const mapStateToProps = (state) => ({
   language: state.language,
+  appColor: state.appColor,
+  theme: state.theme,
 });
 
 const mapDispatchToProps = {
   setLanguage,
+  setAppColor,
+  setTheme,
 };
 
 const ConnectedMainComponent = connect(
@@ -184,7 +286,9 @@ const ConnectedMainComponent = connect(
 const App = () => {
   return (
     <Provider store={store}>
-      <ConnectedMainComponent />
+      <NavigationContainer>
+        <ConnectedMainComponent />
+      </NavigationContainer>
     </Provider>
   );
 };

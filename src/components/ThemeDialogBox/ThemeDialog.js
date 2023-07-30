@@ -2,35 +2,44 @@ import React, { useState, useEffect } from "react";
 import { View, StyleSheet, Modal } from "react-native";
 import { Button, RadioButton, Text, useTheme } from "react-native-paper";
 import { connect } from "react-redux";
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import { useColorScheme } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const SortDialog = ({ visible, onDismiss, onSelectSortOption, language }) => {
-  const [checked, setChecked] = useState("asc");
-  const [prevChecked, setPrevChecked] = useState(checked);
-
+const ThemeDialog = ({ visible, onDismiss, setTheme, language }) => {
   const displayName = {
     en: {
-      sortBy: "Sort by Name:",
+      selectTheme: "Select Theme:",
       apply: "Apply",
       cancel: "Cancel",
-      sort: "Sort",
-      AtoZ: "Ascending",
-      ZtoA: "Descending",
+      darkTheme: "Dark Theme",
+      lightTheme: "Light Theme",
+      systemDefaultTheme: "System Default Theme",
     },
     fr: {
-      sortBy: "Trier par nom:",
+      selectTheme: "Sélectionne un thème:",
       apply: "Appliquer",
       cancel: "Annuler",
-      sort: "Trier",
-      AtoZ: "Croissant",
-      ZtoA: "Décroissant",
+      darkTheme: "Thème sombre",
+      lightTheme: "Thème Lumière",
+      systemDefaultTheme: "Thème par défaut du système",
     },
   };
 
-  const handleDoneButton = () => {
+  const colorScheme = useColorScheme();
+  const [checked, setChecked] = useState(
+    colorScheme === "dark" ? "dark" : "light"
+  );
+  const [prevChecked, setPrevChecked] = useState(checked);
+
+  const handleDoneButton = async () => {
     setPrevChecked(checked);
-    onSelectSortOption(checked);
+    setTheme(checked);
     onDismiss();
+    try {
+      await AsyncStorage.setItem("selectedTheme", JSON.stringify(checked));
+    } catch (error) {
+      // Error saving data to AsyncStorage
+    }
   };
 
   const handleCancelButton = () => {
@@ -43,6 +52,23 @@ const SortDialog = ({ visible, onDismiss, onSelectSortOption, language }) => {
   };
 
   const theme = useTheme();
+
+  //Async theme store check..
+  useEffect(() => {
+    const loadThemeFromStorage = async () => {
+      try {
+        const storedTheme = await AsyncStorage.getItem("selectedTheme");
+        if (storedTheme !== null) {
+          setChecked(JSON.parse(storedTheme));
+          setPrevChecked(JSON.parse(storedTheme));
+        }
+      } catch (error) {
+        // Error retrieving data from AsyncStorage
+      }
+    };
+
+    loadThemeFromStorage();
+  }, []);
 
   return (
     <Modal
@@ -58,39 +84,22 @@ const SortDialog = ({ visible, onDismiss, onSelectSortOption, language }) => {
             { backgroundColor: theme.colors.surface },
           ]}
         >
-          <Text style={styles.title}>{displayName[language].sortBy}</Text>
+          <Text style={styles.title}>{displayName[language].selectTheme}</Text>
           <RadioButton.Group onValueChange={handleRadioChange} value={checked}>
             <View style={styles.radioContainer}>
-              <MaterialCommunityIcons
-                name="sort-alphabetical-ascending"
-                size={24}
-                // color="#000"
-                color={theme.colors.primary}
-                style={styles.radioButtonIcon}
-              />
-
               <View style={styles.radioButtonLabelContainer}>
                 <RadioButton.Item
-                  label={displayName[language].AtoZ}
-                  value="asc"
+                  label={displayName[language].lightTheme}
+                  value="light"
                   labelStyle={styles.radioButtonLabel}
                 />
               </View>
             </View>
-
             <View style={styles.radioContainer}>
-              <MaterialCommunityIcons
-                name="sort-alphabetical-descending"
-                size={24}
-                // color="#000"
-                color={theme.colors.primary}
-                style={styles.radioButtonIcon}
-              />
-
               <View style={styles.radioButtonLabelContainer}>
                 <RadioButton.Item
-                  label={displayName[language].ZtoA}
-                  value="desc"
+                  label={displayName[language].darkTheme}
+                  value="dark"
                   labelStyle={styles.radioButtonLabel}
                 />
               </View>
@@ -142,13 +151,11 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     marginRight: 10,
     flexDirection: "row",
-    justifyContent: "flex-end", // Align buttons to the end
+    justifyContent: "flex-end",
   },
   radioContainer: {
     flexDirection: "row",
     alignItems: "center",
-    marginLeft: 10,
-    marginRight: 10,
   },
   radioButtonIcon: {
     marginRight: 8,
@@ -158,7 +165,6 @@ const styles = StyleSheet.create({
   },
   radioButtonLabelContainer: {
     flex: 1,
-    marginLeft: 8, // Adjust the margin as needed
   },
   radioButtonLabel: {
     fontSize: 16,
@@ -169,4 +175,4 @@ const mapStateToProps = (state) => ({
   language: state.language,
 });
 
-export default connect(mapStateToProps)(SortDialog);
+export default connect(mapStateToProps)(ThemeDialog);

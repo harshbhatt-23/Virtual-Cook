@@ -5,7 +5,7 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     alignItems: "center",
     justifyContent: "flex-start",
-    backgroundColor: "#fff",
+    //backgroundColor: "#fff",
     paddingTop: 50,
   },
   image: {
@@ -20,18 +20,18 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: "bold",
     marginVertical: 6,
-    color: "#36454F",
+    //color: "#36454F",
   },
   categoryName: {
     fontSize: 18,
     fontWeight: "bold",
     textAlign: "left",
-    color: "#36454F",
+    // color: "#36454F",
   },
   prepTime: {
     fontSize: 16,
     fontWeight: "bold",
-    color: "#000",
+    //color: "#000",
   },
   fabContainer: {
     flexDirection: "row",
@@ -40,7 +40,7 @@ const styles = StyleSheet.create({
   },
   recipeDescription: {
     fontSize: 16,
-    color: "#000",
+    //color: "#000",
     marginBottom: 16,
     marginLeft: 20,
   },
@@ -74,6 +74,18 @@ const styles = StyleSheet.create({
   },
   headerTitle: {
     fontWeight: "bold",
+  },
+  dietImage: {
+    width: 20,
+    height: 20,
+    marginLeft: 5,
+    marginTop: 5,
+    marginBottom: 5,
+  },
+  typeWithIcon: {
+    flexDirection: "row",
+    justifyContent: "flex-start",
+    alignItems: "center",
   },
 });
 

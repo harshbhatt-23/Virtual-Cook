@@ -1,17 +1,32 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, TouchableHighlight, FlatList, Image } from "react-native";
+import {
+  View,
+  TouchableHighlight,
+  FlatList,
+  Image,
+  ScrollView,
+  TouchableOpacity,
+  Dimensions,
+  SafeAreaView,
+  StatusBar,
+} from "react-native";
 import style from "./styles";
-import { Searchbar, Button } from "react-native-paper";
+import { Searchbar, Button, useTheme, Text } from "react-native-paper";
 import { recipes } from "../../components/data/RecipeData";
 import { getCategoryName } from "../../components/data/RecipeDataAPI";
 import { connect } from "react-redux";
 import FilterDialog from "../FilterDialogBox/FilterDialog";
 import SortDialog from "../SortDialogBox/SortDialog";
+import nonVegImage from "../../../assets/non-veg-48.png";
+import vegImage from "../../../assets/veg-48.png";
+import { useColorScheme } from "react-native";
 
 //The code for filtering and sorting recipe by name or cataegory
-const RecipesScreen = ({ language, navigation }) => {
+const RecipesScreen = ({ language, navigation, veg }) => {
+  const theme = useTheme();
+
   const handleRecipePress = (item) => {
-    navigation.navigate("RecipeDetails", { item: item });
+    navigation.navigate("RecipeDetails", { item, sourceScreen: "Recipes" });
   };
 
   const menuLabels = {
@@ -43,7 +58,6 @@ const RecipesScreen = ({ language, navigation }) => {
 
   //Search query
   const [searchQuery, setSearchQuery] = useState("");
-
   const [getRecipeCount, setRecipeCount] = useState(recipes.length);
   const [dialogVisible, setDialogVisible] = useState(false);
   const [sortDialogVisible, setSortDialogVisible] = useState(false);
@@ -75,48 +89,65 @@ const RecipesScreen = ({ language, navigation }) => {
     setSortOption(sort);
   };
 
-  const handleCancelButton = () => {
-    setSortDialogVisible(false);
-  };
-
   //Search box value
   const onChangeSearch = (text) => {
     setSearchQuery(text);
   };
 
-  const renderRecipes = ({ item }) => (
-    <TouchableHighlight
-      underlayColor="rgba(0,0,0,0.2)"
-      onPress={() => handleRecipePress(item)}
-    >
-      <>
-        <View style={style.recipeContainer}>
-          <Image style={style.photo} source={{ uri: item.photo_url }} />
-          <Text style={style.title} icon="volume-high">
-            {item.title[language]}
-          </Text>
-          <Text style={style.category}>
-            {getCategoryName(item.categoryId, language)}
-          </Text>
-        </View>
-      </>
-    </TouchableHighlight>
-  );
+  // //statusbar Testing
+  // const getStatusBarHeight = () => {
+  //   return Platform.OS === "android" ? StatusBar.currentHeight : 0;
+  // };
+  // const statusBarHeight = getStatusBarHeight();
+  // //testing done
+
+  const renderRecipes = ({ item }) => {
+    return (
+      <TouchableOpacity
+        underlayColor={theme.colors.surface}
+        onPress={() => handleRecipePress(item)}
+      >
+        <>
+          <View style={style.recipeContainer}>
+            <Image style={style.photo} source={{ uri: item.photo_url }} />
+            <Text style={style.title} icon="volume-high">
+              {item.title[language]}
+            </Text>
+            <View style={style.typeWithIcon}>
+              <Text style={style.category}>
+                {getCategoryName(item.categoryId, language)}
+              </Text>
+              <Image
+                source={item.isVeg ? vegImage : nonVegImage}
+                style={style.dietImage}
+              />
+            </View>
+          </View>
+        </>
+      </TouchableOpacity>
+    );
+  };
 
   useEffect(() => {
     // Filter recipes when selectedFilterCategories or searchQuery changes
     filterRecipes();
-  }, [selectedFilterCategories, searchQuery, sortOption]);
+  }, [selectedFilterCategories, searchQuery, sortOption, veg]);
 
   const filterRecipes = () => {
-    //let filteredRecipes = recipes;
     let filteredRecipes = [...recipes];
+
+    // Apply veg filter
+    if (veg === true) {
+      filteredRecipes = filteredRecipes.filter(
+        (recipe) => recipe.isVeg === veg
+      );
+    }
 
     // Apply category filter
     if (selectedFilterCategories.length > 0) {
       filteredRecipes = filteredRecipes.filter((recipe) =>
         selectedFilterCategories.includes(
-          getCategoryName(recipe.categoryId, language)
+          getCategoryName(recipe.categoryId, language) //.toLowerCase()
         )
       );
     }
@@ -144,69 +175,83 @@ const RecipesScreen = ({ language, navigation }) => {
     setFilteredRecipeData(filteredRecipes);
   };
 
+  const isDarkTheme = theme.dark;
+
   return (
-    <View>
-      <View style={style.searchConatiner}>
-        <Searchbar
-          placeholder={menuLabels[language].searchFood}
-          onChangeText={onChangeSearch}
-          value={searchQuery}
-        />
-      </View>
-
-      <FilterDialog
-        visible={dialogVisible}
-        onDismiss={hideDialog}
-        onSelectCategories={handleSelectCategories}
+    <SafeAreaView style={{ flex: 1, backgroundColor: theme.colors.background }}>
+      <StatusBar
+        barStyle={!isDarkTheme ? "dark-content" : "light-content"}
+        backgroundColor={theme.colors.background}
       />
-
-      <SortDialog
-        visible={sortDialogVisible}
-        onDismiss={hideSortDialog}
-        onSelectSortOption={handleSorting}
-        onCancelButton={handleCancelButton}
-      />
-
-      <View style={style.buttonMainContainer}>
-        <View style={style.buttonContainer}>
-          <Button icon="filter-outline" mode="contained" onPress={showDialog}>
-            {menuLabels[language].filter}
-          </Button>
+      <View style={[{ backgroundColor: theme.colors.background, flex: 1 }]}>
+        <View style={style.searchConatiner}>
+          <Searchbar
+            placeholder={menuLabels[language].searchFood}
+            onChangeText={onChangeSearch}
+            value={searchQuery}
+          />
         </View>
 
-        <View style={style.buttonContainer}>
-          <Button
-            icon="sort-alphabetical-variant"
-            mode="contained"
-            onPress={showSortDialog}
-          >
-            {menuLabels[language].sort}
-          </Button>
+        <FilterDialog
+          visible={dialogVisible}
+          onDismiss={hideDialog}
+          onSelectCategories={handleSelectCategories}
+          initialSelectedCategories={selectedFilterCategories}
+          language={language}
+        />
+
+        <SortDialog
+          visible={sortDialogVisible}
+          onDismiss={hideSortDialog}
+          onSelectSortOption={handleSorting}
+          language={language}
+        />
+
+        <View style={style.buttonMainContainer}>
+          <View style={style.buttonContainer}>
+            <Button icon="filter-outline" mode="contained" onPress={showDialog}>
+              {menuLabels[language].filter}
+            </Button>
+          </View>
+
+          <View style={style.buttonContainer}>
+            <Button
+              icon="sort-alphabetical-variant"
+              mode="contained"
+              onPress={showSortDialog}
+            >
+              {menuLabels[language].sort}
+            </Button>
+          </View>
+        </View>
+
+        <View style={style.recipeCount}>
+          <Text>
+            {getRecipeCount} {menuLabels[language].recipeFound}
+          </Text>
+        </View>
+
+        <View style={{ flex: 1 }}>
+          <FlatList
+            contentContainerStyle={{
+              paddingBottom: 25,
+            }}
+            vertical
+            showsVerticalScrollIndicator={false}
+            numColumns={2}
+            data={filteredRecipeData}
+            renderItem={renderRecipes}
+            keyExtractor={(item) => `${item.recipeId}`}
+          />
         </View>
       </View>
-
-      <View style={style.recipeCount}>
-        <Text>
-          {getRecipeCount} {menuLabels[language].recipeFound}
-        </Text>
-      </View>
-
-      <View style={style.dataBottomMargin}>
-        <FlatList
-          vertical
-          showsVerticalScrollIndicator={false}
-          numColumns={2}
-          data={filteredRecipeData}
-          renderItem={renderRecipes}
-          keyExtractor={(item) => `${item.recipeId}`}
-        />
-      </View>
-    </View>
+    </SafeAreaView>
   );
 };
 
 const mapStateToProps = (state) => ({
   language: state.language,
+  veg: state.veg,
 });
 
 export default connect(mapStateToProps)(RecipesScreen);
