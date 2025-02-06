@@ -1,3 +1,4 @@
+
 export const categories = [
   {
     id: 1,
@@ -6,7 +7,7 @@ export const categories = [
       fr: "Petit-déjeuner",
     },
     photo_url:
-      "https://namelymarly.com/wp-content/uploads/2023/05/Biscoff-Overnight-Oats-1930-web.jpg.webp",
+      "https://namelymarly.com/wp-content/uploads/2021/02/Pina_Colada_Smoothie_02b-web.jpg",
   },
   {
     id: 2,
@@ -46,7 +47,7 @@ export const recipes = [
       fr: "Gruau de nuit Biscoff",
     },
     photo_url:
-      "https://namelymarly.com/wp-content/uploads/2023/05/Biscoff-Overnight-Oats-1930-web.jpg.webp",
+      "https://namelymarly.com/wp-content/uploads/2023/05/Biscoff-Overnight-Oats-1930-web.jpg",
     preptime: "10 minutes",
     cooktime: "4 hours",
     ingredientId: "0",
@@ -63,8 +64,7 @@ export const recipes = [
       en: "Chia Flax Pudding",
       fr: "Pouding Chia Lin",
     },
-    photo_url:
-      "https://namelymarly.com/wp-content/uploads/2023/03/Chia-Flax-Pudding-1616-web.jpg.webp",
+    photo_url: "https://namelymarly.com/wp-content/uploads/2023/03/Chia-Flax-Pudding-1616-web.jpg",
     preptime: "2 minutes",
     cooktime: "20 minutes",
     ingredientId: "1",
@@ -82,7 +82,7 @@ export const recipes = [
       fr: "Bol à Smoothi ​​Violet",
     },
     photo_url:
-      "https://namelymarly.com/wp-content/uploads/2023/01/Purple-Smoothie-Bowl-1472-web.jpg.webp",
+      "https://namelymarly.com/wp-content/uploads/2023/01/Purple-Smoothie-Bowl-1472-web.jpg",
     preptime: "10 minutes",
     cooktime: "25 minutes",
     ingredientId: "2",
@@ -100,7 +100,7 @@ export const recipes = [
       fr: "Omelette aux oeufs",
     },
     photo_url:
-      "https://namelymarly.com/wp-content/uploads/2023/01/Just-Egg-Omelette-1372-web.jpg.webp",
+      "https://namelymarly.com/wp-content/uploads/2023/01/Just-Egg-Omelette-1372-web.jpg",
     preptime: "1 minutes",
     cooktime: "5 minutes",
     ingredientId: "3",
@@ -118,7 +118,7 @@ export const recipes = [
       fr: "Burrito végétalien",
     },
     photo_url:
-      "https://namelymarly.com/wp-content/uploads/2019/12/Breakfast_Burrito_05-web.jpg.webp",
+      "https://namelymarly.com/wp-content/uploads/2019/12/Breakfast_Burrito_05-web.jpg",
     preptime: "20 minutes",
     cooktime: "50 minutes",
     ingredientId: "4",
@@ -136,7 +136,7 @@ export const recipes = [
       fr: "Salade Tune Végétalienne",
     },
     photo_url:
-      "https://namelymarly.com/wp-content/uploads/2021/01/Vegan_Tuna_Salad_03-web.jpg.webp",
+      "https://namelymarly.com/wp-content/uploads/2021/01/Vegan_Tuna_Salad_03-web.jpg",
     preptime: "5 minutes",
     cooktime: "10 minutes",
     ingredientId: "5",
@@ -154,7 +154,7 @@ export const recipes = [
       fr: "Nouilles épicées au sésame",
     },
     photo_url:
-      "https://namelymarly.com/wp-content/uploads/2017/02/Sesame_Zoodles_08-web.jpg.webp",
+      "https://namelymarly.com/wp-content/uploads/2017/02/Sesame_Zoodles_08-web.jpg",
     preptime: "15 minutes",
     cooktime: "35 minutes",
     ingredientId: "6",
@@ -172,7 +172,7 @@ export const recipes = [
       fr: "Soupe aux lentilles",
     },
     photo_url:
-      "https://namelymarly.com/wp-content/uploads/2018/11/Lentil_Soup_05-web.jpg.webp",
+      "https://namelymarly.com/wp-content/uploads/2018/11/Lentil_Soup_05-web.jpg",
     preptime: "15 minutes",
     cooktime: "35 minutes",
     ingredientId: "6",
@@ -190,7 +190,7 @@ export const recipes = [
       fr: "Riz sauvage et patates douces",
     },
     photo_url:
-      "https://namelymarly.com/wp-content/uploads/2017/01/Rice_Sweet_Potato_Skillet_04-web.jpg.webp",
+      "https://namelymarly.com/wp-content/uploads/2017/01/Rice_Sweet_Potato_Skillet_04-web.jpg",
     preptime: "30 minutes",
     cooktime: "1 hr 30 min",
     ingredientId: "7",
@@ -208,7 +208,7 @@ export const recipes = [
       fr: "Salade de Taco",
     },
     photo_url:
-      "https://namelymarly.com/wp-content/uploads/2021/02/Vegan_Taco_Salad_05-web.jpg.webp",
+      "https://namelymarly.com/wp-content/uploads/2021/02/Vegan_Taco_Salad_05-web.jpg",
     preptime: "15 minutes",
     cooktime: "25 minutes",
     ingredientId: "8",
@@ -226,7 +226,7 @@ export const recipes = [
       fr: "Cuire des pâtes",
     },
     photo_url:
-      "https://namelymarly.com/wp-content/uploads/2017/10/20171025_Vegan_Garlic_Pasta_12_edit-web.jpg.webp",
+      "https://namelymarly.com/wp-content/uploads/2017/10/20171025_Vegan_Garlic_Pasta_12_edit-web.jpg",
     preptime: "10 minutes",
     cooktime: "40 minutes",
     ingredientId: "9",
@@ -262,7 +262,7 @@ export const recipes = [
       fr: "Tartelettes à l'ananas",
     },
     photo_url:
-      "https://namelymarly.com/wp-content/uploads/2023/05/Vegan-Pineapple-Tart-2051-web.jpg.webp",
+      "https://namelymarly.com/wp-content/uploads/2023/05/Vegan-Pineapple-Tart-2051-web.jpg",
     preptime: "40 minutes",
     cooktime: "1 hr 30 min",
     ingredientId: "11",
@@ -280,7 +280,7 @@ export const recipes = [
       fr: "Petits gâteaux",
     },
     photo_url:
-      "https://namelymarly.com/wp-content/uploads/2023/05/Patriotic-Cupcakes-2020-web.jpg.webp",
+      "https://namelymarly.com/wp-content/uploads/2023/05/Patriotic-Cupcakes-2020-web.jpg",
     preptime: "20 minutes",
     cooktime: "3 hr 30 min",
     ingredientId: "12",
@@ -298,7 +298,7 @@ export const recipes = [
       fr: "Gâteau au chocolat et à l'orange",
     },
     photo_url:
-      "https://namelymarly.com/wp-content/uploads/2023/04/Vegan-Chocolate-Orange-Cake-1730-Edit-web.jpg.webp",
+      "https://namelymarly.com/wp-content/uploads/2023/04/Vegan-Chocolate-Orange-Cake-1730-Edit-web.jpg",
     preptime: "20 minutes",
     cooktime: "3 hr 30 min",
     ingredientId: "13",
@@ -316,7 +316,7 @@ export const recipes = [
       fr: "Gâteaux avec des pépites de chocolat",
     },
     photo_url:
-      "https://namelymarly.com/wp-content/uploads/2022/12/vegan-peanut-butter-chocolate-chip-cookies-1347-web.jpg.webp",
+      "https://namelymarly.com/wp-content/uploads/2022/12/vegan-peanut-butter-chocolate-chip-cookies-1347-web.jpg",
     preptime: "20 minutes",
     cooktime: "1 hr 10 min",
     ingredientId: "14",
@@ -334,7 +334,7 @@ export const recipes = [
       fr: "Forêt noire",
     },
     photo_url:
-      "https://namelymarly.com/wp-content/uploads/2022/09/Vegan-Black-Forest-Cake-05-web.jpg.webp",
+      "https://namelymarly.com/wp-content/uploads/2022/09/Vegan-Black-Forest-Cake-05-web.jpg",
     preptime: "30 minutes",
     cooktime: "1 hr 30 min",
     ingredientId: "15",
@@ -352,7 +352,7 @@ export const recipes = [
       fr: "Muffins au thé chai",
     },
     photo_url:
-      "https://namelymarly.com/wp-content/uploads/2015/02/Chai-Tea-Muffins-with-Pumpkin-Seeds-13.jpg.webp",
+      "https://namelymarly.com/wp-content/uploads/2015/02/Chai-Tea-Muffins-with-Pumpkin-Seeds-13.jpg",
     preptime: "10 minutes",
     cooktime: "20 minutes",
     ingredientId: "16",
